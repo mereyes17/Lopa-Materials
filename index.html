@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LOPA OSM Tracker — Foro Consulting</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#F7F4EF;color:#3D3028;}
+.screen{display:none;}.screen.active{display:block;}
+
+/* ── ENTRY ── */
+.entry{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;}
+.e-logo{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:.16em;color:#9E8A7E;text-transform:uppercase;margin-bottom:4px;text-align:center;}
+.e-project{font-size:10px;font-weight:500;letter-spacing:.22em;color:#B0A09A;text-transform:uppercase;margin-bottom:40px;text-align:center;}
+.e-title{font-family:'Cormorant Garamond',serif;font-size:28px;color:#3D3028;margin-bottom:6px;text-align:center;}
+.e-sub{font-size:12px;color:#9E8A7E;margin-bottom:36px;text-align:center;}
+.owner-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:100%;max-width:640px;margin-bottom:24px;}
+@media(max-width:500px){.owner-grid{grid-template-columns:repeat(2,1fr);}}
+.owner-btn{background:#fff;border:2px solid #E5DDD9;border-radius:12px;padding:28px 16px 24px;cursor:pointer;text-align:center;transition:all .18s;}
+.owner-btn:hover{border-color:#C4A0AD;background:#FDF8F9;transform:translateY(-2px);box-shadow:0 6px 24px rgba(196,160,173,.18);}
+.owner-btn:active{transform:translateY(0);}
+.owner-num{font-family:'Cormorant Garamond',serif;font-size:32px;color:#C4A0AD;font-weight:500;line-height:1;}
+.owner-name{font-size:16px;color:#3D3028;font-weight:700;margin-top:8px;letter-spacing:.01em;}
+.e-note{font-size:10px;color:#C0B4AF;font-style:italic;}
+
+/* ── TRACKER ── */
+.tracker{min-height:100vh;background:#F7F4EF;padding:24px 28px 40px;}
+@media(max-width:600px){.tracker{padding:16px 14px;}}
+.tr-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid #C4A0AD;margin-bottom:18px;}
+.tr-label{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;letter-spacing:.1em;color:#9E8A7E;text-transform:uppercase;}
+.tr-house{font-size:16px;font-weight:500;color:#3D3028;margin-top:2px;}
+.back-btn{font-size:10px;color:#9E8A7E;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;border:1px solid #D9CEC9;padding:5px 14px;border-radius:20px;background:#fff;transition:all .15s;}
+.back-btn:hover{border-color:#C4A0AD;color:#C4A0AD;}
+
+/* ── TAB BAR ── */
+.tab-bar{display:flex;align-items:center;gap:7px;margin-bottom:18px;flex-wrap:wrap;}
+.ftab{padding:5px 15px;border-radius:20px;font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border:1px solid #D9CEC9;color:#9E8A7E;cursor:pointer;background:#FAF7F5;transition:all .15s;}
+.ftab.active{background:#C4A0AD;color:#fff;border-color:#C4A0AD;}
+.ftab:hover:not(.active){border-color:#C4A0AD;color:#C4A0AD;}
+.ftab.buying{border-color:#BA7517;color:#BA7517;background:#FFFBF5;}
+.ftab.buying.active{background:#BA7517;color:#fff;border-color:#BA7517;}
+.add-floor-btn{padding:5px 13px;border-radius:20px;font-size:10px;font-weight:500;border:1px dashed #C4A0AD;color:#C4A0AD;cursor:pointer;background:transparent;transition:background .15s;}
+.add-floor-btn:hover{background:#FDF8F9;}
+
+/* ── FLOOR VIEW ── */
+.floor-view{display:none;}.floor-view.active{display:block;}
+.body-grid{display:grid;grid-template-columns:1fr 300px;gap:14px;align-items:start;}
+@media(max-width:800px){.body-grid{grid-template-columns:1fr;}}
+
+/* ── PLAN CARD ── */
+.plan-card{background:#fff;border:1px solid #E5DDD9;border-radius:8px;padding:16px;}
+.plan-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.plan-floor-lbl{font-size:9px;font-weight:500;letter-spacing:.13em;color:#B0A09A;text-transform:uppercase;}
+.upload-label{font-size:9px;color:#C4A0AD;cursor:pointer;border:1px solid #E5DDD9;padding:4px 12px;border-radius:20px;background:#FDF8F9;transition:border-color .15s;white-space:nowrap;}
+.upload-label:hover{border-color:#C4A0AD;}
+.plan-img-wrap{position:relative;width:100%;min-height:220px;}
+.plan-img-wrap img.plan-img{width:100%;display:block;border-radius:4px;}
+.drop-zone{width:100%;min-height:220px;background:#FAF7F5;border:1.5px dashed #D9CEC9;border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
+.drop-zone:hover{border-color:#C4A0AD;background:#FDF8F9;}
+.drop-icon{width:36px;height:36px;margin-bottom:10px;opacity:.3;}
+.drop-text{font-size:12px;color:#B0A09A;text-align:center;}
+.drop-sub{font-size:10px;color:#C8BDB8;margin-top:4px;}
+.pins-layer{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+.pin-dot{position:absolute;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:#fff;cursor:pointer;transform:translate(-50%,-50%);pointer-events:all;transition:transform .12s;border:2px solid rgba(255,255,255,.65);}
+.pin-dot:hover{transform:translate(-50%,-50%) scale(1.25);}
+.s-approved{background:#3A6B38;}.s-ordered{background:#BA7517;}.s-pending{background:#8A4A62;}.s-delivered{background:#185FA5;}.s-installed{background:#C4A0AD;}
+.crosshair-hint{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:#3D3028;color:#fff;font-size:10px;padding:4px 14px;border-radius:20px;pointer-events:none;white-space:nowrap;z-index:5;}
+.legend-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+.leg{display:flex;align-items:center;gap:4px;font-size:9px;color:#9E8A7E;}
+.leg-d{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* ── DETAIL PANEL ── */
+.det-card{background:#fff;border:1px solid #E5DDD9;border-radius:8px;overflow:hidden;position:sticky;top:20px;}
+.det-hint-wrap{padding:16px;}
+.det-hint{font-size:11px;color:#C0B4AF;font-style:italic;text-align:center;padding:24px 8px;line-height:1.8;}
+.det-hint strong{font-weight:500;color:#C4A0AD;}
+.det-zone-head{display:flex;align-items:center;gap:10px;padding:14px 16px 0;}
+.det-num{width:28px;height:28px;border-radius:50%;background:#C4A0AD;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#fff;flex-shrink:0;}
+.det-zone-name{font-size:14px;font-weight:500;color:#3D3028;}
+.det-zone-sub{font-size:10px;color:#9E8A7E;margin-top:1px;}
+
+/* photos strip */
+.photos-strip-wrap{padding:12px 0 0;}
+.photos-strip-lbl{font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:#B0A09A;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;}
+/* hero photo - first image shown large */
+.photo-hero{position:relative;width:100%;height:200px;overflow:hidden;background:#F0EBE7;}
+.photo-hero img{width:100%;height:100%;object-fit:cover;cursor:pointer;display:block;transition:transform .2s;}
+.photo-hero img:hover{transform:scale(1.02);}
+.photo-hero-del{position:absolute;top:8px;right:8px;width:24px;height:24px;background:rgba(61,48,40,.7);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:#fff;line-height:1;backdrop-filter:blur(4px);}
+.photo-hero-empty{width:100%;height:160px;background:#FAF7F5;border:1.5px dashed #D9CEC9;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
+.photo-hero-empty:hover{border-color:#C4A0AD;background:#FDF8F9;}
+.photo-hero-empty .pa-icon{font-size:32px;color:#C4A0AD;line-height:1;margin-bottom:6px;}
+.photo-hero-empty .pa-lbl{font-size:11px;color:#B0A09A;}
+/* thumbnail strip below hero */
+.photos-strip{display:flex;gap:6px;overflow-x:auto;padding:8px 16px 4px;scrollbar-width:none;}
+.photos-strip::-webkit-scrollbar{display:none;}
+.photo-wrap{position:relative;flex-shrink:0;}
+.photo-thumb-sm{width:56px;height:56px;object-fit:cover;border-radius:5px;cursor:pointer;border:2px solid transparent;display:block;transition:border-color .12s;}
+.photo-thumb-sm:hover,.photo-thumb-sm.active{border-color:#C4A0AD;}
+.photo-del-btn{position:absolute;top:2px;right:2px;width:15px;height:15px;background:rgba(61,48,40,.75);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:8px;color:#fff;line-height:1;}
+.photo-add-sm{width:56px;height:56px;background:#FAF7F5;border:1.5px dashed #D9CEC9;border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s;}
+.photo-add-sm:hover{border-color:#C4A0AD;background:#FDF8F9;}
+.photo-add-sm .pa-icon{font-size:18px;color:#C4A0AD;line-height:1;}
+.photo-add-sm .pa-lbl{font-size:8px;color:#B0A09A;margin-top:2px;}
+
+/* det fields */
+.det-fields{padding:10px 16px 0;}
+.det-row{margin-bottom:10px;}
+.det-lbl{font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:#B0A09A;margin-bottom:3px;}
+.det-val{font-size:12px;color:#3D3028;font-weight:500;}
+.det-val.muted{color:#B0A09A;font-weight:400;font-style:italic;}
+.inline-input{font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;color:#3D3028;border:none;border-bottom:1px dashed #D9CEC9;background:transparent;outline:none;width:100%;padding:1px 2px;}
+.inline-input:focus{border-bottom-color:#C4A0AD;}
+
+/* status badge */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;padding:4px 10px;border-radius:20px;cursor:pointer;user-select:none;transition:opacity .15s;position:relative;}
+.badge:hover{opacity:.85;}
+.badge-hint{font-size:8px;opacity:.55;margin-left:2px;}
+.b-approved{background:#D5E8D4;color:#3A6B38;}
+.b-ordered{background:#FFF0D6;color:#8A5C00;}
+.b-pending{background:#F0E8ED;color:#8A4A62;}
+.b-delivered{background:#E6F1FB;color:#185FA5;}
+.b-installed{background:#EDE4EA;color:#7A5068;}
+
+/* status popup */
+.status-popup{display:none;position:absolute;top:calc(100% + 5px);left:0;background:#fff;border:1px solid #E5DDD9;border-radius:8px;z-index:50;min-width:150px;box-shadow:0 4px 20px rgba(61,48,40,.13);overflow:hidden;}
+.status-popup.open{display:block;}
+.sopt{padding:9px 14px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .1s;}
+.sopt:hover,.sopt.cur{background:#FAF7F5;}
+.sopt.cur{font-weight:500;}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* counts */
+.cnt-row{display:flex;gap:7px;padding:10px 16px 0;}
+.cnt-chip{flex:1;background:#FAF7F5;border-radius:6px;padding:7px 4px;text-align:center;}
+.cnt-n{font-size:15px;font-weight:500;color:#3D3028;}
+.cnt-l{font-size:9px;color:#B0A09A;text-transform:uppercase;letter-spacing:.05em;margin-top:1px;}
+
+/* action buttons */
+.pin-actions{display:flex;flex-direction:column;gap:6px;padding:12px 16px 16px;}
+.add-pin-note{font-size:9px;color:#B0A09A;margin-bottom:4px;font-style:italic;line-height:1.5;}
+.btn-primary{width:100%;padding:8px;border-radius:6px;font-size:11px;font-weight:500;background:#C4A0AD;color:#fff;border:none;cursor:pointer;transition:background .15s;}
+.btn-primary:hover{background:#B38E9B;}
+.btn-ghost{width:100%;padding:7px;border-radius:6px;font-size:10px;font-weight:500;background:#FAF7F5;color:#9E8A7E;border:1px solid #E5DDD9;cursor:pointer;transition:all .15s;}
+.btn-ghost:hover{background:#F0E8ED;color:#8A4A62;}
+.btn-amber{width:100%;padding:7px;border-radius:6px;font-size:10px;font-weight:500;background:#FFFBF5;color:#BA7517;border:1px solid #F5DFA8;cursor:pointer;transition:all .15s;}
+.btn-amber:hover{background:#FFF0D6;}
+
+/* ── BUYING LIST VIEW ── */
+.buying-view{display:none;}.buying-view.active{display:block;}
+.buying-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.buying-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:#3D3028;}
+.btn-add-buy{padding:6px 16px;border-radius:20px;font-size:10px;font-weight:500;background:#BA7517;color:#fff;border:none;cursor:pointer;transition:background .15s;}
+.btn-add-buy:hover{background:#9A620F;}
+.buying-filters{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap;}
+.bfilter{padding:4px 12px;border-radius:20px;font-size:10px;border:1px solid #E5DDD9;color:#9E8A7E;cursor:pointer;background:#FAF7F5;transition:all .15s;}
+.bfilter.active{background:#3D3028;color:#fff;border-color:#3D3028;}
+.buying-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+@media(max-width:500px){.buying-summary{grid-template-columns:repeat(2,1fr);}}
+.sum-chip{background:#fff;border:1px solid #E5DDD9;border-radius:8px;padding:12px;text-align:center;}
+.sum-n{font-size:18px;font-weight:500;color:#3D3028;}
+.sum-l{font-size:9px;color:#B0A09A;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+.buying-table-wrap{background:#fff;border:1px solid #E5DDD9;border-radius:8px;overflow:hidden;}
+.buying-table{width:100%;border-collapse:collapse;font-size:12px;}
+.buying-table thead tr{background:#FAF7F5;border-bottom:1px solid #E5DDD9;}
+.buying-table thead th{padding:9px 12px;text-align:left;font-size:9px;font-weight:500;letter-spacing:.1em;color:#B0A09A;text-transform:uppercase;white-space:nowrap;}
+.buying-table tbody tr{border-bottom:1px solid #F5F0EE;transition:background .1s;}
+.buying-table tbody tr:last-child{border-bottom:none;}
+.buying-table tbody tr:hover{background:#FAF7F5;}
+.buying-table td{padding:10px 12px;vertical-align:middle;}
+.buying-table td.muted{color:#B0A09A;font-style:italic;}
+.price-cell{font-variant-numeric:tabular-nums;font-weight:500;}
+.item-actions{display:flex;gap:4px;}
+.iact{padding:3px 9px;font-size:9px;border:1px solid #E5DDD9;border-radius:20px;cursor:pointer;background:#FAF7F5;color:#9E8A7E;transition:all .15s;}
+.iact:hover{border-color:#C4A0AD;color:#C4A0AD;}
+.iact.del:hover{border-color:#8A4A62;color:#8A4A62;}
+.buying-empty{padding:40px;text-align:center;font-size:12px;color:#C0B4AF;font-style:italic;}
+
+/* ── MODALS ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(61,48,40,.4);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:10px;padding:24px;width:90%;max-width:360px;max-height:92vh;overflow-y:auto;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:#3D3028;margin-bottom:4px;padding-bottom:12px;border-bottom:1px solid #F0EBE7;}
+.modal label{font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:#B0A09A;display:block;margin-bottom:4px;margin-top:12px;}
+.modal input,.modal select,.modal textarea{width:100%;border:1px solid #E5DDD9;border-radius:6px;padding:8px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:#3D3028;background:#FAF7F5;outline:none;transition:border-color .15s;}
+.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:#C4A0AD;}
+.modal textarea{resize:vertical;min-height:52px;}
+.modal-actions{display:flex;gap:8px;margin-top:18px;}
+.modal-ok{flex:1;padding:9px;background:#C4A0AD;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;transition:background .15s;}
+.modal-ok:hover{background:#B38E9B;}
+.modal-ok.amber{background:#BA7517;}.modal-ok.amber:hover{background:#9A620F;}
+.modal-cancel{flex:1;padding:9px;background:#FAF7F5;color:#9E8A7E;border:1px solid #E5DDD9;border-radius:6px;font-size:11px;cursor:pointer;}
+.modal-cancel:hover{background:#F0EBE7;}
+
+/* material library picker inside modal */
+.lib-toggle{font-size:10px;color:#C4A0AD;cursor:pointer;text-decoration:underline;margin-top:8px;display:inline-block;}
+.lib-panel{display:none;margin-top:10px;border:1px solid #E5DDD9;border-radius:6px;overflow:hidden;max-height:200px;overflow-y:auto;}
+.lib-panel.open{display:block;}
+.lib-search{width:100%;border:none;border-bottom:1px solid #E5DDD9;padding:8px 12px;font-size:11px;font-family:'DM Sans',sans-serif;outline:none;background:#FAF7F5;color:#3D3028;}
+.lib-list{list-style:none;}
+.lib-item{padding:9px 12px;font-size:11px;cursor:pointer;display:flex;flex-direction:column;gap:2px;transition:background .1s;border-bottom:1px solid #F5F0EE;}
+.lib-item:last-child{border-bottom:none;}
+.lib-item:hover{background:#FDF8F9;}
+.lib-item-name{font-weight:500;color:#3D3028;}
+.lib-item-sub{font-size:10px;color:#9E8A7E;}
+.lib-empty{padding:16px;font-size:11px;color:#C0B4AF;font-style:italic;text-align:center;}
+
+/* ── LIGHTBOX ── */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(20,12,8,.88);z-index:300;align-items:center;justify-content:center;}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:92vw;max-height:90vh;border-radius:6px;object-fit:contain;}
+.lb-close{position:absolute;top:16px;right:20px;color:#fff;font-size:28px;cursor:pointer;opacity:.7;line-height:1;}
+.lb-close:hover{opacity:1;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:#3D3028;color:#fff;font-size:11px;padding:8px 18px;border-radius:20px;opacity:0;transition:opacity .2s,transform .2s;z-index:400;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- ENTRY -->
+<div id="s-entry" class="screen active">
+  <div class="entry">
+    <div class="e-logo">Foro Consulting Inc.</div>
+    <div class="e-project">LOPA Compound &nbsp;·&nbsp; Tanay, Rizal</div>
+    <div class="e-title">OSM Floor Plan Tracker</div>
+    <div class="e-sub">Select your unit to view materials &amp; finishes status</div>
+    <div class="owner-grid">
+      <div class="owner-btn" onclick="openHouse('H2','Jim')"><div class="owner-num">H2</div><div class="owner-name">Jim</div></div>
+      <div class="owner-btn" onclick="openHouse('H3','Tinay')"><div class="owner-num">H3</div><div class="owner-name">Tinay</div></div>
+      <div class="owner-btn" onclick="openHouse('H4','Rapa')"><div class="owner-num">H4</div><div class="owner-name">Rapa</div></div>
+      <div class="owner-btn" onclick="openHouse('H5','Jamike')"><div class="owner-num">H5</div><div class="owner-name">Jamike</div></div>
+      <div class="owner-btn" onclick="openHouse('H6','Joel')"><div class="owner-num">H6</div><div class="owner-name">Joel</div></div>
+      <div class="owner-btn" onclick="openHouse('H7','Nine')"><div class="owner-num">H7</div><div class="owner-name">Nine</div></div>
+      <div class="owner-btn" onclick="openHouse('H8','Whitey')"><div class="owner-num">H8</div><div class="owner-name">Whitey</div></div>
+    </div>
+    <div class="e-note">Each owner sees only their unit during presentation</div>
+  </div>
+</div>
+
+<!-- TRACKER -->
+<div id="s-tracker" class="screen">
+  <div class="tracker">
+    <div class="tr-header">
+      <div>
+        <div class="tr-label">OSM Floor Plan Tracker</div>
+        <div class="tr-house" id="tr-house-label"></div>
+      </div>
+      <div class="back-btn" onclick="goBack()">&#8592; All Units</div>
+    </div>
+    <div class="tab-bar" id="tab-bar"></div>
+    <div id="floor-views-wrap"></div>
+    <div class="buying-view" id="buying-view">
+      <div class="buying-summary" id="buying-summary"></div>
+      <div class="buying-header">
+        <div class="buying-title">Buying List</div>
+        <button class="btn-add-buy" onclick="openBuyModal()">+ Add Item</button>
+      </div>
+      <div class="buying-filters" id="buying-filters"></div>
+      <div class="buying-table-wrap">
+        <table class="buying-table">
+          <thead><tr><th>#</th><th>Category</th><th>Item</th><th>Supplier</th><th>Qty</th><th>Est. Price</th><th>Status</th><th></th></tr></thead>
+          <tbody id="buying-tbody"></tbody>
+        </table>
+        <div id="buying-empty" class="buying-empty" style="display:none;">No items yet. Tap + Add Item to start your buying list.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PIN MODAL -->
+<div class="modal-overlay" id="pin-modal">
+  <div class="modal">
+    <div class="modal-title">Add OSM Item</div>
+    <span class="lib-toggle" onclick="toggleLibPanel('pin')">📦 Pick from material library</span>
+    <div class="lib-panel" id="lib-panel-pin">
+      <input class="lib-search" id="lib-search-pin" type="text" placeholder="Search materials…" oninput="filterLib('pin')"/>
+      <ul class="lib-list" id="lib-list-pin"></ul>
+    </div>
+    <label>Zone / Room</label><input type="text" id="m-zone" placeholder="e.g. Living Room"/>
+    <label>OSM Item</label><input type="text" id="m-item" placeholder="e.g. Engineered Wood Flooring"/>
+    <label>Supplier</label><input type="text" id="m-supplier" placeholder="e.g. Wilcon Depot"/>
+    <label>Variant / Spec</label><input type="text" id="m-variant" placeholder="e.g. Oak Natural 600×600"/>
+    <label>Status</label>
+    <select id="m-status">
+      <option value="pending">Pending</option><option value="approved">Approved</option>
+      <option value="ordered">Ordered</option><option value="delivered">Delivered</option>
+      <option value="installed">Installed</option>
+    </select>
+    <label>Remarks</label><textarea id="m-remarks" placeholder="e.g. ETA May 10, 2026"></textarea>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closePinModal()">Cancel</button>
+      <button class="modal-ok" onclick="savePin()">Save Pin</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PIN MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-title">Edit OSM Item</div>
+    <label>Zone / Room</label><input type="text" id="em-zone"/>
+    <label>OSM Item</label><input type="text" id="em-item"/>
+    <label>Supplier</label><input type="text" id="em-supplier"/>
+    <label>Variant / Spec</label><input type="text" id="em-variant"/>
+    <label>Status</label>
+    <select id="em-status">
+      <option value="pending">Pending</option><option value="approved">Approved</option>
+      <option value="ordered">Ordered</option><option value="delivered">Delivered</option>
+      <option value="installed">Installed</option>
+    </select>
+    <label>Remarks</label><textarea id="em-remarks"></textarea>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="modal-ok" onclick="updatePin()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- FLOOR MODAL -->
+<div class="modal-overlay" id="floor-modal">
+  <div class="modal">
+    <div class="modal-title">Add New Floor</div>
+    <label>Floor Name</label><input type="text" id="fm-name" placeholder="e.g. Second Floor, Roof Deck"/>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeFloorModal()">Cancel</button>
+      <button class="modal-ok" onclick="saveFloor()">Add Floor</button>
+    </div>
+  </div>
+</div>
+
+<!-- BUY ITEM MODAL -->
+<div class="modal-overlay" id="buy-modal">
+  <div class="modal">
+    <div class="modal-title">Add to Buying List</div>
+    <span class="lib-toggle" onclick="toggleLibPanel('buy')">📦 Pick from material library</span>
+    <div class="lib-panel" id="lib-panel-buy">
+      <input class="lib-search" id="lib-search-buy" type="text" placeholder="Search materials…" oninput="filterLib('buy')"/>
+      <ul class="lib-list" id="lib-list-buy"></ul>
+    </div>
+    <label>Category</label>
+    <select id="bm-cat">
+      <option>Kitchen</option><option>Bathroom</option><option>Living Room</option>
+      <option>Bedroom</option><option>Lighting</option><option>Appliances</option>
+      <option>Flooring</option><option>Wall Finish</option><option>Outdoor</option><option>Other</option>
+    </select>
+    <label>Item Name</label><input type="text" id="bm-item" placeholder="e.g. Built-in Oven"/>
+    <label>Supplier / Brand</label><input type="text" id="bm-supplier" placeholder="e.g. Samsung, Abenson"/>
+    <label>Quantity</label><input type="number" id="bm-qty" value="1" min="1"/>
+    <label>Est. Price (PHP)</label><input type="number" id="bm-price" placeholder="0"/>
+    <label>Status</label>
+    <select id="bm-status">
+      <option value="pending">Pending</option><option value="approved">Approved</option>
+      <option value="ordered">Ordered</option><option value="delivered">Delivered</option>
+      <option value="installed">Installed</option>
+    </select>
+    <label>Notes / Spec</label><textarea id="bm-notes" placeholder="e.g. Color: Matte Black, Model: ABC123"></textarea>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeBuyModal()">Cancel</button>
+      <button class="modal-ok amber" onclick="saveBuyItem()">Add to List</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT BUY MODAL -->
+<div class="modal-overlay" id="edit-buy-modal">
+  <div class="modal">
+    <div class="modal-title">Edit Buying Item</div>
+    <label>Category</label>
+    <select id="ebm-cat">
+      <option>Kitchen</option><option>Bathroom</option><option>Living Room</option>
+      <option>Bedroom</option><option>Lighting</option><option>Appliances</option>
+      <option>Flooring</option><option>Wall Finish</option><option>Outdoor</option><option>Other</option>
+    </select>
+    <label>Item Name</label><input type="text" id="ebm-item"/>
+    <label>Supplier / Brand</label><input type="text" id="ebm-supplier"/>
+    <label>Quantity</label><input type="number" id="ebm-qty" min="1"/>
+    <label>Est. Price (PHP)</label><input type="number" id="ebm-price"/>
+    <label>Status</label>
+    <select id="ebm-status">
+      <option value="pending">Pending</option><option value="approved">Approved</option>
+      <option value="ordered">Ordered</option><option value="delivered">Delivered</option>
+      <option value="installed">Installed</option>
+    </select>
+    <label>Notes / Spec</label><textarea id="ebm-notes"></textarea>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeEditBuyModal()">Cancel</button>
+      <button class="modal-ok amber" onclick="updateBuyItem()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lb-close">&times;</div>
+  <img id="lb-img" src="" alt=""/>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══ CONSTANTS ══ */
+var STATUSES=['pending','approved','ordered','delivered','installed'];
+var SLABELS={pending:'Pending',approved:'Approved',ordered:'Ordered',delivered:'Delivered',installed:'Installed'};
+var SCOLORS={pending:'#8A4A62',approved:'#3A6B38',ordered:'#BA7517',delivered:'#185FA5',installed:'#C4A0AD'};
+
+/* ══ STATE ══ */
+var S={
+  house:null,owner:null,activeTabId:null,
+  pendingPinPos:null,pendingFloorId:null,
+  editingPinFid:null,editingPinIdx:null,
+  editingBuyIdx:null,buyFilter:'All',
+  // Global material library — shared across all houses
+  materialLib:[],
+  houses:{
+    H2:{owner:'Jim',   floors:[{id:'GF',label:'Ground Floor',image:null,zones:[]}],buyingList:[]},
+    H3:{owner:'Tinay', floors:[{id:'GF',label:'Ground Floor',image:null,zones:[]}],buyingList:[]},
+    H4:{owner:'Rapa',  floors:[{id:'GF',label:'Ground Floor',image:null,zones:[]}],buyingList:[]},
+    H5:{owner:'Jamike',floors:[{id:'GF',label:'Ground Floor',image:null,zones:[]}],buyingList:[]},
+    H6:{owner:'Joel',  floors:[{id:'GF',label:'Ground Floor',image:null,zones:[]}],buyingList:[]},
+    H7:{owner:'Nine',  floors:[{id:'GF',label:'Ground Floor',image:null,zones:[]}],buyingList:[]},
+    H8:{owner:'Whitey',floors:[{id:'GF',label:'Ground Floor',image:null,zones:[]}],buyingList:[]}
+  }
+};
+
+function H(){return S.houses[S.house];}
+function floorByTabId(tid){var f=H().floors;for(var i=0;i<f.length;i++)if(f[i].id===tid)return f[i];return f[0];}
+function floorIdxByTabId(tid){var f=H().floors;for(var i=0;i<f.length;i++)if(f[i].id===tid)return i;return 0;}
+
+/* ══ MATERIAL LIBRARY ══ */
+function addToLib(zone){
+  // Don't duplicate — match on item+supplier+variant
+  var exists=S.materialLib.some(function(m){
+    return m.item===zone.item&&m.supplier===zone.supplier&&m.variant===zone.variant;
+  });
+  if(!exists&&zone.item&&zone.item!=='—'){
+    S.materialLib.push({item:zone.item,supplier:zone.supplier,variant:zone.variant,photos:zone.photos?zone.photos.slice():[]});
+  }
+}
+
+function toggleLibPanel(ctx){
+  var p=document.getElementById('lib-panel-'+ctx);
+  var open=p.classList.toggle('open');
+  if(open){
+    document.getElementById('lib-search-'+ctx).value='';
+    renderLibList(ctx,'');
+    setTimeout(function(){document.getElementById('lib-search-'+ctx).focus();},100);
+  }
+}
+
+function filterLib(ctx){
+  var q=document.getElementById('lib-search-'+ctx).value.toLowerCase();
+  renderLibList(ctx,q);
+}
+
+function renderLibList(ctx,q){
+  var ul=document.getElementById('lib-list-'+ctx);
+  var filtered=S.materialLib.filter(function(m){
+    return !q||m.item.toLowerCase().includes(q)||m.supplier.toLowerCase().includes(q)||m.variant.toLowerCase().includes(q);
+  });
+  if(filtered.length===0){ul.innerHTML='<li class="lib-empty">No materials saved yet.<br>Add a pin first to build your library.</li>';return;}
+  ul.innerHTML='';
+  filtered.forEach(function(m,i){
+    var li=document.createElement('li');
+    li.className='lib-item';
+    li.innerHTML='<span class="lib-item-name">'+esc(m.item)+'</span><span class="lib-item-sub">'+esc(m.supplier)+(m.variant&&m.variant!=='TBD'?' — '+esc(m.variant):'')+'</span>';
+    li.onclick=(function(mat){return function(){applyLibItem(ctx,mat);};})(m);
+    ul.appendChild(li);
+  });
+}
+
+function applyLibItem(ctx,mat){
+  if(ctx==='pin'){
+    document.getElementById('m-item').value=mat.item;
+    document.getElementById('m-supplier').value=mat.supplier;
+    document.getElementById('m-variant').value=mat.variant;
+  } else {
+    document.getElementById('bm-item').value=mat.item;
+    document.getElementById('bm-supplier').value=mat.supplier;
+    document.getElementById('bm-notes').value=mat.variant!=='TBD'?mat.variant:'';
+  }
+  document.getElementById('lib-panel-'+ctx).classList.remove('open');
+  showToast('Material filled in — edit as needed');
+}
+
+/* ══ NAVIGATION ══ */
+function openHouse(code,name){
+  S.house=code;S.owner=name;
+  S.activeTabId=H().floors[0].id;
+  document.getElementById('tr-house-label').textContent=code+' · '+name;
+  document.getElementById('s-entry').classList.remove('active');
+  document.getElementById('s-tracker').classList.add('active');
+  rebuildTabBar();showTab(S.activeTabId);
+}
+function goBack(){
+  cancelAddPin();
+  document.getElementById('s-tracker').classList.remove('active');
+  document.getElementById('s-entry').classList.add('active');
+}
+
+/* ══ TAB BAR ══ */
+function rebuildTabBar(){
+  var bar=document.getElementById('tab-bar');bar.innerHTML='';
+  H().floors.forEach(function(f){
+    var d=document.createElement('div');
+    d.className='ftab'+(f.id===S.activeTabId?' active':'');
+    d.id='tab-'+f.id;d.textContent=f.label;
+    d.onclick=(function(id){return function(){showTab(id);};})(f.id);
+    bar.appendChild(d);
+  });
+  var af=document.createElement('div');af.className='add-floor-btn';af.textContent='+ Add Floor';af.onclick=openFloorModal;bar.appendChild(af);
+  var bl=document.createElement('div');bl.className='ftab buying'+(S.activeTabId==='buying'?' active':'');bl.id='tab-buying';bl.textContent='Buying List';bl.onclick=function(){showTab('buying');};bar.appendChild(bl);
+}
+
+function showTab(id){
+  S.activeTabId=id;cancelAddPin();
+  document.querySelectorAll('.ftab').forEach(function(t){t.classList.remove('active');});
+  var at=document.getElementById('tab-'+id);if(at)at.classList.add('active');
+  document.getElementById('buying-view').classList.remove('active');
+  document.querySelectorAll('.floor-view').forEach(function(v){v.classList.remove('active');});
+  if(id==='buying'){
+    document.getElementById('buying-view').classList.add('active');
+    renderBuyingList();
+  } else {
+    ensureFloorView(id);
+    var fv=document.getElementById('fv-'+id);if(fv)fv.classList.add('active');
+    renderFloorView(id);
+    renderDetDefault(id);
+  }
+}
+
+/* ══ FLOOR VIEW ══ */
+function ensureFloorView(fid){
+  if(document.getElementById('fv-'+fid))return;
+  var wrap=document.getElementById('floor-views-wrap');
+  var div=document.createElement('div');
+  div.className='floor-view';div.id='fv-'+fid;
+  div.innerHTML=
+    '<div class="body-grid">'+
+    '<div class="plan-card">'+
+      '<div class="plan-top">'+
+        '<div class="plan-floor-lbl" id="pflbl-'+fid+'"></div>'+
+        '<label class="upload-label">Upload Image<input type="file" accept="image/*" style="display:none;" onchange="handleImgUpload(event,\''+fid+'\')"/></label>'+
+      '</div>'+
+      '<div class="plan-img-wrap" id="wrap-'+fid+'">'+
+        '<div class="drop-zone" id="dz-'+fid+'" onclick="document.querySelector(\'#fv-'+fid+' input[type=file]\').click()">'+
+          '<svg class="drop-icon" viewBox="0 0 36 36" fill="none"><rect x="3" y="3" width="30" height="30" rx="3" stroke="#C4A0AD" stroke-width="1.5"/><rect x="3" y="3" width="15" height="16" stroke="#C4A0AD" stroke-width="1"/><rect x="18" y="3" width="15" height="10" stroke="#C4A0AD" stroke-width="1"/><rect x="18" y="13" width="15" height="20" stroke="#C4A0AD" stroke-width="1"/><rect x="3" y="19" width="15" height="14" stroke="#C4A0AD" stroke-width="1"/></svg>'+
+          '<div class="drop-text">Tap to upload floor plan</div><div class="drop-sub">JPG, PNG — any screenshot works</div>'+
+        '</div>'+
+        '<img class="plan-img" id="img-'+fid+'" style="display:none;" alt="Floor plan"/>'+
+        '<div class="pins-layer" id="pl-'+fid+'"></div>'+
+      '</div>'+
+      '<div class="legend-row">'+
+        '<div class="leg"><div class="leg-d" style="background:#3A6B38"></div>Approved</div>'+
+        '<div class="leg"><div class="leg-d" style="background:#BA7517"></div>Ordered</div>'+
+        '<div class="leg"><div class="leg-d" style="background:#8A4A62"></div>Pending</div>'+
+        '<div class="leg"><div class="leg-d" style="background:#185FA5"></div>Delivered</div>'+
+        '<div class="leg"><div class="leg-d" style="background:#C4A0AD"></div>Installed</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="det-card" id="det-'+fid+'"></div>'+
+    '</div>';
+  wrap.appendChild(div);
+}
+
+function renderFloorView(fid){
+  var fl=floorByTabId(fid);
+  var lbl=document.getElementById('pflbl-'+fid);if(lbl)lbl.textContent=fl.label;
+  var img=document.getElementById('img-'+fid);var dz=document.getElementById('dz-'+fid);if(!img||!dz)return;
+  if(fl.image){img.src=fl.image;img.style.display='block';dz.style.display='none';}
+  else{img.style.display='none';dz.style.display='flex';}
+  renderPins(fid);
+}
+
+/* ══ IMAGE UPLOAD ══ */
+function handleImgUpload(e,fid){
+  var file=e.target.files[0];if(!file)return;
+  var r=new FileReader();
+  r.onload=function(ev){floorByTabId(fid).image=ev.target.result;renderFloorView(fid);renderDetDefault(fid);showToast('Floor plan uploaded');};
+  r.readAsDataURL(file);e.target.value='';
+}
+
+/* ══ PINS ══ */
+function renderPins(fid){
+  var layer=document.getElementById('pl-'+fid);if(!layer)return;
+  layer.innerHTML='';
+  floorByTabId(fid).zones.forEach(function(z,i){
+    var d=document.createElement('div');
+    d.className='pin-dot s-'+z.status;d.style.left=z.x;d.style.top=z.y;d.textContent=i+1;d.title=z.name;
+    d.onclick=(function(zone,num,flid){return function(ev){ev.stopPropagation();showZoneDet(zone,num,flid);};})(z,i+1,fid);
+    layer.appendChild(d);
+  });
+}
+
+function activateAddPin(fid){
+  var fl=floorByTabId(fid);
+  if(!fl.image){showToast('Upload a floor plan first');return;}
+  S.pendingFloorId=fid;
+  var wrap=document.getElementById('wrap-'+fid);wrap.style.cursor='crosshair';
+  var hint=document.createElement('div');hint.className='crosshair-hint';hint.id='ch-'+fid;hint.textContent='Click on the floor plan to place a pin';wrap.appendChild(hint);
+  function handler(e){
+    wrap.removeEventListener('click',handler);cancelAddPin();
+    var rect=wrap.getBoundingClientRect();
+    S.pendingPinPos={x:((e.clientX-rect.left)/rect.width*100).toFixed(2)+'%',y:((e.clientY-rect.top)/rect.height*100).toFixed(2)+'%',fid:fid};
+    openPinModal();
+  }
+  wrap._pinHandler=handler;
+  wrap.addEventListener('click',handler);
+}
+
+function cancelAddPin(){
+  if(S.pendingFloorId){
+    var wrap=document.getElementById('wrap-'+S.pendingFloorId);
+    if(wrap){wrap.style.cursor='default';if(wrap._pinHandler)wrap.removeEventListener('click',wrap._pinHandler);}
+    var hint=document.getElementById('ch-'+S.pendingFloorId);if(hint)hint.remove();
+    S.pendingFloorId=null;
+  }
+}
+
+/* ══ PIN MODAL ══ */
+function openPinModal(){
+  ['m-zone','m-item','m-supplier','m-variant','m-remarks'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('m-status').value='pending';
+  document.getElementById('lib-panel-pin').classList.remove('open');
+  document.getElementById('pin-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('m-zone').focus();},100);
+}
+function closePinModal(){document.getElementById('pin-modal').classList.remove('open');S.pendingPinPos=null;}
+
+function savePin(){
+  if(!S.pendingPinPos)return;
+  var p=S.pendingPinPos;
+  var zone={
+    x:p.x,y:p.y,
+    name: document.getElementById('m-zone').value.trim()||'Zone',
+    item: document.getElementById('m-item').value.trim()||'—',
+    supplier:document.getElementById('m-supplier').value.trim()||'TBD',
+    variant:document.getElementById('m-variant').value.trim()||'TBD',
+    status:document.getElementById('m-status').value,
+    remarks:document.getElementById('m-remarks').value.trim()||'—',
+    photos:[]
+  };
+  floorByTabId(p.fid).zones.push(zone);
+  addToLib(zone);
+  closePinModal();renderPins(p.fid);
+  showZoneDet(zone,floorByTabId(p.fid).zones.length,p.fid);
+  showToast('Pin added — '+zone.name);
+}
+
+/* ══ EDIT PIN MODAL ══ */
+function openEditModal(fid,idx){
+  var z=floorByTabId(fid).zones[idx];
+  S.editingPinFid=fid;S.editingPinIdx=idx;
+  document.getElementById('em-zone').value=z.name;document.getElementById('em-item').value=z.item;
+  document.getElementById('em-supplier').value=z.supplier;document.getElementById('em-variant').value=z.variant;
+  document.getElementById('em-status').value=z.status;document.getElementById('em-remarks').value=z.remarks;
+  document.getElementById('edit-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('em-zone').focus();},100);
+}
+function closeEditModal(){document.getElementById('edit-modal').classList.remove('open');}
+function updatePin(){
+  var fid=S.editingPinFid;var idx=S.editingPinIdx;var z=floorByTabId(fid).zones[idx];
+  z.name=document.getElementById('em-zone').value.trim()||z.name;
+  z.item=document.getElementById('em-item').value.trim()||'—';
+  z.supplier=document.getElementById('em-supplier').value.trim()||'TBD';
+  z.variant=document.getElementById('em-variant').value.trim()||'TBD';
+  z.status=document.getElementById('em-status').value;
+  z.remarks=document.getElementById('em-remarks').value.trim()||'—';
+  addToLib(z);closeEditModal();renderPins(fid);showZoneDet(z,idx+1,fid);showToast('Pin updated');
+}
+
+function deletePin(fid,idx){
+  if(!confirm('Remove this pin?'))return;
+  floorByTabId(fid).zones.splice(idx,1);renderPins(fid);renderDetDefault(fid);showToast('Pin removed');
+}
+
+/* ══ STATUS CYCLE (inline) ══ */
+function cycleStatus(fid,idx){
+  var z=floorByTabId(fid).zones[idx];
+  var cur=STATUSES.indexOf(z.status);
+  z.status=STATUSES[(cur+1)%STATUSES.length];
+  renderPins(fid);showZoneDet(z,idx+1,fid);showToast('Status → '+SLABELS[z.status]);
+}
+function cycleBuyStatus(idx){
+  var it=H().buyingList[idx];
+  var cur=STATUSES.indexOf(it.status);
+  it.status=STATUSES[(cur+1)%STATUSES.length];
+  renderBuyingList();showToast('Status → '+SLABELS[it.status]);
+}
+
+/* ══ PHOTO UPLOAD ══ */
+function triggerPhotoUpload(fid,idx){
+  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=true;
+  inp.onchange=function(e){
+    var z=floorByTabId(fid).zones[idx];if(!z.photos)z.photos=[];
+    var rem=6-z.photos.length;
+    Array.from(e.target.files).slice(0,rem).forEach(function(file){
+      var r=new FileReader();
+      r.onload=function(ev){z.photos.push(ev.target.result);showZoneDet(z,idx+1,fid);};
+      r.readAsDataURL(file);
+    });
+  };
+  inp.click();
+}
+function swapHero(thumbEl,fid,zIdx,pIdx){
+  var photos=floorByTabId(fid).zones[zIdx].photos;
+  // Update hero image
+  var hero=thumbEl.closest('.det-card').querySelector('.photo-hero img');
+  var heroDel=thumbEl.closest('.det-card').querySelector('.photo-hero-del');
+  if(hero){
+    hero.src=photos[pIdx];
+    hero.onclick=function(){openLightbox(photos[pIdx]);};
+    if(heroDel) heroDel.onclick=function(){deletePhoto(fid,zIdx,pIdx);};
+  }
+  // Update active thumb
+  thumbEl.closest('.photos-strip').querySelectorAll('.photo-thumb-sm').forEach(function(t){t.classList.remove('active');});
+  thumbEl.classList.add('active');
+}
+
+function deletePhoto(fid,zIdx,pIdx){
+  floorByTabId(fid).zones[zIdx].photos.splice(pIdx,1);
+  showZoneDet(floorByTabId(fid).zones[zIdx],zIdx+1,fid);
+}
+
+/* ══ DETAIL PANEL ══ */
+function renderDetDefault(fid){
+  var fl=floorByTabId(fid);var det=document.getElementById('det-'+fid);if(!det)return;
+  det.innerHTML='<div class="det-hint-wrap"><div class="det-hint">'+(fl.image?'Tap a pin to view OSM details.':'Upload a floor plan then tap<br><strong>+ Add OSM Pin</strong><br>to start placing items.')+'</div>'+
+  '<div class="pin-actions"><div class="add-pin-note">Press the button then click anywhere on the floor plan.</div>'+
+  '<button class="btn-primary" onclick="activateAddPin(\''+fid+'\')">+ Add OSM Pin</button></div></div>';
+}
+
+function showZoneDet(z,num,fid){
+  var fl=floorByTabId(fid);var idx=num-1;
+  var counts={approved:0,ordered:0,pending:0,delivered:0,installed:0};
+  fl.zones.forEach(function(zz){if(counts[zz.status]!==undefined)counts[zz.status]++;});
+  var confirmed=counts.approved+counts.delivered+counts.installed;
+  var photos=z.photos||[];
+
+  var html='';
+
+  // Zone header
+  html+='<div class="det-zone-head">'+
+    '<div class="det-num">'+num+'</div>'+
+    '<div><div class="det-zone-name">'+esc(z.name)+'</div>'+
+    '<div class="det-zone-sub">'+S.house+' · '+S.owner+' — '+fl.label+'</div></div>'+
+  '</div>';
+
+  // Photos — hero + thumbnail strip
+  html+='<div class="photos-strip-wrap">';
+  html+='<div class="photos-strip-lbl">Reference Photos <span style="color:#C4A0AD;font-size:9px;">(tap to enlarge)</span></div>';
+  if(photos.length===0){
+    // Empty state — big upload prompt
+    html+='<div class="photo-hero-empty" onclick="triggerPhotoUpload(\''+fid+'\','+idx+')">'+
+      '<div class="pa-icon">+</div>'+
+      '<div class="pa-lbl">Tap to add reference photo</div>'+
+    '</div>';
+  } else {
+    // Hero — first photo large
+    html+='<div class="photo-hero">'+
+      '<img src="'+photos[0]+'" onclick="openLightbox(\''+photos[0]+'\')" alt="ref" title="Tap to enlarge"/>'+
+      '<div class="photo-hero-del" onclick="deletePhoto(\''+fid+'\','+idx+',0)">&times;</div>'+
+    '</div>';
+    // Thumbnail strip — rest of photos + add button
+    html+='<div class="photos-strip">';
+    photos.forEach(function(src,pi){
+      html+='<div class="photo-wrap">'+
+        '<img class="photo-thumb-sm'+(pi===0?' active':'')+'" src="'+src+'" onclick="swapHero(this,\''+fid+'\','+idx+','+pi+')" alt="ref"/>'+
+        '<div class="photo-del-btn" onclick="deletePhoto(\''+fid+'\','+idx+','+pi+')">&times;</div>'+
+      '</div>';
+    });
+    if(photos.length<6){
+      html+='<div class="photo-add-sm" onclick="triggerPhotoUpload(\''+fid+'\','+idx+')">'+
+        '<div class="pa-icon">+</div><div class="pa-lbl">Add</div></div>';
+    }
+    html+='</div>';
+  }
+  html+='</div>';
+
+  // Fields
+  html+='<div class="det-fields">';
+  // OSM Item
+  html+='<div class="det-row"><div class="det-lbl">OSM Item</div><div class="det-val'+(z.item==='—'?' muted':'')+'">'+esc(z.item)+'</div></div>';
+  // Supplier
+  html+='<div class="det-row"><div class="det-lbl">Supplier</div><div class="det-val'+(z.supplier==='TBD'?' muted':'')+'">'+esc(z.supplier)+'</div></div>';
+  // Variant
+  html+='<div class="det-row"><div class="det-lbl">Variant / Spec</div><div class="det-val'+(z.variant==='TBD'?' muted':'')+'">'+esc(z.variant)+'</div></div>';
+  // Remarks — inline editable
+  html+='<div class="det-row"><div class="det-lbl">Remarks <span style="color:#C4A0AD;font-size:8px;">— tap to edit</span></div>'+
+    '<input class="inline-input" value="'+esc(z.remarks)+'" onblur="saveRemarks(\''+fid+'\','+idx+',this.value)" onkeydown="if(event.key===\'Enter\')this.blur()"/></div>';
+  // Status — inline badge cycle
+  html+='<div class="det-row"><div class="det-lbl">Status <span style="color:#C4A0AD;font-size:8px;">— tap to change</span></div>'+
+    '<div style="position:relative;display:inline-block;" id="sbadge-wrap-'+fid+'-'+idx+'">'+
+    '<span class="badge b-'+z.status+'" onclick="toggleStatusPopup(\''+fid+'\','+idx+')">'+SLABELS[z.status]+' <span class="badge-hint">▾</span></span>'+
+    '<div class="status-popup" id="spop-'+fid+'-'+idx+'">'+
+      STATUSES.map(function(s){
+        return '<div class="sopt'+(z.status===s?' cur':'')+'" onclick="setPinStatus(\''+fid+'\','+idx+',\''+s+'\')">'+
+          '<div class="sdot" style="background:'+SCOLORS[s]+'"></div>'+SLABELS[s]+'</div>';
+      }).join('')+
+    '</div></div></div>';
+  html+='</div>'; // end det-fields
+
+  // Counts
+  html+='<div class="cnt-row">'+
+    '<div class="cnt-chip"><div class="cnt-n">'+fl.zones.length+'</div><div class="cnt-l">Total</div></div>'+
+    '<div class="cnt-chip"><div class="cnt-n">'+confirmed+'</div><div class="cnt-l">Confirmed</div></div>'+
+    '<div class="cnt-chip"><div class="cnt-n">'+counts.pending+'</div><div class="cnt-l">Pending</div></div>'+
+  '</div>';
+
+  // Actions
+  html+='<div class="pin-actions">'+
+    '<button class="btn-primary" onclick="activateAddPin(\''+fid+'\')">+ Add OSM Pin</button>'+
+    '<button class="btn-amber" onclick="copyPinToBuyList(\''+fid+'\','+idx+')">→ Add to Buying List</button>'+
+    '<button class="btn-ghost" onclick="openEditModal(\''+fid+'\','+idx+')">Edit Details</button>'+
+    '<button class="btn-ghost" onclick="deletePin(\''+fid+'\','+idx+')">Remove Pin</button>'+
+  '</div>';
+
+  var det=document.getElementById('det-'+fid);if(det)det.innerHTML=html;
+}
+
+function saveRemarks(fid,idx,val){
+  floorByTabId(fid).zones[idx].remarks=val.trim()||'—';
+}
+
+function toggleStatusPopup(fid,idx){
+  var pop=document.getElementById('spop-'+fid+'-'+idx);
+  var isOpen=pop.classList.contains('open');
+  // close all
+  document.querySelectorAll('.status-popup.open').forEach(function(p){p.classList.remove('open');});
+  if(!isOpen)pop.classList.add('open');
+}
+
+function setPinStatus(fid,idx,status){
+  floorByTabId(fid).zones[idx].status=status;
+  document.querySelectorAll('.status-popup.open').forEach(function(p){p.classList.remove('open');});
+  renderPins(fid);showZoneDet(floorByTabId(fid).zones[idx],idx+1,fid);
+  showToast('Status → '+SLABELS[status]);
+}
+
+function copyPinToBuyList(fid,idx){
+  var z=floorByTabId(fid).zones[idx];
+  H().buyingList.push({cat:'Other',item:z.item,supplier:z.supplier,qty:1,price:0,status:z.status,notes:z.variant!=='TBD'?z.variant:'',photos:z.photos?z.photos.slice():[]});
+  showToast('Added to buying list');
+}
+
+/* ══ FLOOR MODAL ══ */
+function openFloorModal(){document.getElementById('fm-name').value='';document.getElementById('floor-modal').classList.add('open');setTimeout(function(){document.getElementById('fm-name').focus();},100);}
+function closeFloorModal(){document.getElementById('floor-modal').classList.remove('open');}
+function saveFloor(){
+  var name=document.getElementById('fm-name').value.trim();if(!name){showToast('Enter a floor name');return;}
+  var id='F'+Date.now();
+  H().floors.push({id:id,label:name,image:null,zones:[]});
+  closeFloorModal();S.activeTabId=id;rebuildTabBar();showTab(id);showToast(name+' added');
+}
+
+/* ══ BUYING LIST ══ */
+function openBuyModal(){
+  ['bm-item','bm-supplier','bm-notes'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('bm-cat').value='Kitchen';document.getElementById('bm-qty').value='1';
+  document.getElementById('bm-price').value='';document.getElementById('bm-status').value='pending';
+  document.getElementById('lib-panel-buy').classList.remove('open');
+  document.getElementById('buy-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('bm-item').focus();},100);
+}
+function closeBuyModal(){document.getElementById('buy-modal').classList.remove('open');}
+function saveBuyItem(){
+  var item={cat:document.getElementById('bm-cat').value,item:document.getElementById('bm-item').value.trim()||'Item',
+    supplier:document.getElementById('bm-supplier').value.trim()||'TBD',qty:parseInt(document.getElementById('bm-qty').value)||1,
+    price:parseFloat(document.getElementById('bm-price').value)||0,status:document.getElementById('bm-status').value,
+    notes:document.getElementById('bm-notes').value.trim()||'—'};
+  H().buyingList.push(item);
+  // Also add to lib
+  addToLib({item:item.item,supplier:item.supplier,variant:item.notes,photos:[]});
+  closeBuyModal();renderBuyingList();showToast('Added: '+item.item);
+}
+
+function openEditBuyModal(idx){
+  var it=H().buyingList[idx];S.editingBuyIdx=idx;
+  document.getElementById('ebm-cat').value=it.cat;document.getElementById('ebm-item').value=it.item;
+  document.getElementById('ebm-supplier').value=it.supplier;document.getElementById('ebm-qty').value=it.qty;
+  document.getElementById('ebm-price').value=it.price;document.getElementById('ebm-status').value=it.status;
+  document.getElementById('ebm-notes').value=it.notes;
+  document.getElementById('edit-buy-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('ebm-item').focus();},100);
+}
+function closeEditBuyModal(){document.getElementById('edit-buy-modal').classList.remove('open');}
+function updateBuyItem(){
+  var idx=S.editingBuyIdx;var it=H().buyingList[idx];
+  it.cat=document.getElementById('ebm-cat').value;it.item=document.getElementById('ebm-item').value.trim()||it.item;
+  it.supplier=document.getElementById('ebm-supplier').value.trim()||'TBD';
+  it.qty=parseInt(document.getElementById('ebm-qty').value)||1;
+  it.price=parseFloat(document.getElementById('ebm-price').value)||0;
+  it.status=document.getElementById('ebm-status').value;
+  it.notes=document.getElementById('ebm-notes').value.trim()||'—';
+  addToLib({item:it.item,supplier:it.supplier,variant:it.notes,photos:[]});
+  closeEditBuyModal();renderBuyingList();showToast('Updated: '+it.item);
+}
+function deleteBuyItem(idx){if(!confirm('Remove this item?'))return;H().buyingList.splice(idx,1);renderBuyingList();showToast('Item removed');}
+
+function renderBuyingList(){
+  var list=H().buyingList;
+  var totalPrice=list.reduce(function(a,b){return a+(b.price*b.qty);},0);
+  var confirmed=list.filter(function(i){return i.status==='approved'||i.status==='delivered'||i.status==='installed';}).length;
+  var pending=list.filter(function(i){return i.status==='pending';}).length;
+  document.getElementById('buying-summary').innerHTML=
+    '<div class="sum-chip"><div class="sum-n">'+list.length+'</div><div class="sum-l">Items</div></div>'+
+    '<div class="sum-chip"><div class="sum-n">'+confirmed+'</div><div class="sum-l">Confirmed</div></div>'+
+    '<div class="sum-chip"><div class="sum-n">'+pending+'</div><div class="sum-l">Pending</div></div>'+
+    '<div class="sum-chip"><div class="sum-n">₱'+totalPrice.toLocaleString('en-PH',{maximumFractionDigits:0})+'</div><div class="sum-l">Est. Total</div></div>';
+
+  var cats=['All'].concat(Array.from(new Set(list.map(function(i){return i.cat;}))));
+  var fw=document.getElementById('buying-filters');fw.innerHTML='';
+  cats.forEach(function(c){
+    var d=document.createElement('div');d.className='bfilter'+(S.buyFilter===c?' active':'');
+    d.textContent=c==='All'?'All':c+' ('+list.filter(function(i){return i.cat===c;}).length+')';
+    d.onclick=(function(cat){return function(){S.buyFilter=cat;renderBuyingList();};})(c);
+    fw.appendChild(d);
+  });
+
+  var filtered=S.buyFilter==='All'?list:list.filter(function(i){return i.cat===S.buyFilter;});
+  var tbody=document.getElementById('buying-tbody');var empty=document.getElementById('buying-empty');
+  if(filtered.length===0){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';tbody.innerHTML='';
+  filtered.forEach(function(it,fi){
+    var realIdx=list.indexOf(it);
+    var tr=document.createElement('tr');
+    tr.innerHTML=
+      '<td style="color:#B0A09A;font-size:10px;">'+(fi+1)+'</td>'+
+      '<td style="font-weight:500;">'+esc(it.cat)+'</td>'+
+      '<td>'+esc(it.item)+(it.notes&&it.notes!=='—'?'<div style="font-size:10px;color:#B0A09A;margin-top:2px;">'+esc(it.notes)+'</div>':'')+'</td>'+
+      '<td class="'+(it.supplier==='TBD'?'muted':'')+'">'+esc(it.supplier)+'</td>'+
+      '<td style="text-align:center;">'+it.qty+'</td>'+
+      '<td class="price-cell">'+(it.price?'₱'+it.price.toLocaleString():'-')+'</td>'+
+      '<td><span class="badge b-'+it.status+'" onclick="cycleBuyStatus('+realIdx+')" title="Tap to change status">'+SLABELS[it.status]+' <span class="badge-hint">▾</span></span></td>'+
+      '<td><div class="item-actions"><span class="iact" onclick="openEditBuyModal('+realIdx+')">Edit</span><span class="iact del" onclick="deleteBuyItem('+realIdx+')">Del</span></div></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+/* ══ LIGHTBOX ══ */
+function openLightbox(src){document.getElementById('lb-img').src=src;document.getElementById('lightbox').classList.add('open');}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('open');}
+
+/* ══ TOAST ══ */
+function showToast(msg){
+  var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},2300);
+}
+
+/* ══ UTILS ══ */
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// Close modals on overlay click
+['pin-modal','edit-modal','floor-modal','buy-modal','edit-buy-modal'].forEach(function(id){
+  var el=document.getElementById(id);
+  el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});
+});
+// Close status popups on outside click
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.badge')&&!e.target.closest('.status-popup')){
+    document.querySelectorAll('.status-popup.open').forEach(function(p){p.classList.remove('open');});
+  }
+});
+document.getElementById('fm-name').addEventListener('keydown',function(e){if(e.key==='Enter')saveFloor();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLightbox();});
+</script>
+</body>
+</html>
