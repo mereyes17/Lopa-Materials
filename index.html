@@ -65,7 +65,19 @@ html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#F7F4EF;co
 .pins-layer{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
 .pin-dot{position:absolute;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:#fff;cursor:pointer;transform:translate(-50%,-50%);pointer-events:all;transition:transform .12s;border:2px solid rgba(255,255,255,.65);}
 .pin-dot:hover{transform:translate(-50%,-50%) scale(1.25);}
-.s-approved{background:#3A6B38;}.s-ordered{background:#BA7517;}.s-pending{background:#8A4A62;}.s-delivered{background:#185FA5;}.s-installed{background:#C4A0AD;}
+.s-pending{background:#8A4A62;}
+.s-for-quotation{background:#7A5C8A;}
+.s-for-approval{background:#5B6E8A;}
+.s-approved{background:#3A6B38;}
+.s-ordered{background:#BA7517;}
+.s-for-delivery{background:#7A6218;}
+.s-for-installation{background:#2E6B6B;}
+.s-delivered{background:#185FA5;}
+.s-installed{background:#C4A0AD;}
+.s-on-hold{background:#888078;}
+.s-cancelled{background:#A04040;}
+.s-replaced{background:#6B4A8A;}
+.s-custom{background:#7A6A5A;}
 .crosshair-hint{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:#3D3028;color:#fff;font-size:10px;padding:4px 14px;border-radius:20px;pointer-events:none;white-space:nowrap;z-index:5;}
 .legend-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
 .leg{display:flex;align-items:center;gap:4px;font-size:9px;color:#9E8A7E;}
@@ -118,11 +130,19 @@ html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#F7F4EF;co
 .badge{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;padding:4px 10px;border-radius:20px;cursor:pointer;user-select:none;transition:opacity .15s;position:relative;}
 .badge:hover{opacity:.85;}
 .badge-hint{font-size:8px;opacity:.55;margin-left:2px;}
+.b-pending{background:#F0E8ED;color:#8A4A62;}
+.b-for-quotation{background:#EDE8F5;color:#7A5C8A;}
+.b-for-approval{background:#E8EDF5;color:#5B6E8A;}
 .b-approved{background:#D5E8D4;color:#3A6B38;}
 .b-ordered{background:#FFF0D6;color:#8A5C00;}
-.b-pending{background:#F0E8ED;color:#8A4A62;}
+.b-for-delivery{background:#FFF8E0;color:#7A6218;}
+.b-for-installation{background:#E0F5F5;color:#2E6B6B;}
 .b-delivered{background:#E6F1FB;color:#185FA5;}
 .b-installed{background:#EDE4EA;color:#7A5068;}
+.b-on-hold{background:#EDEBE8;color:#888078;}
+.b-cancelled{background:#F5E0E0;color:#A04040;}
+.b-replaced{background:#EDE8F5;color:#6B4A8A;}
+.b-custom{background:#F5F0E8;color:#7A6A5A;}
 
 /* status popup */
 .status-popup{display:none;position:absolute;top:calc(100% + 5px);left:0;background:#fff;border:1px solid #E5DDD9;border-radius:8px;z-index:50;min-width:150px;box-shadow:0 4px 20px rgba(61,48,40,.13);overflow:hidden;}
@@ -340,9 +360,18 @@ html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#F7F4EF;co
     <label>Variant / Spec</label><input type="text" id="m-variant" placeholder="e.g. Oak Natural 600×600"/>
     <label>Status</label>
     <select id="m-status">
-      <option value="pending">Pending</option><option value="approved">Approved</option>
-      <option value="ordered">Ordered</option><option value="delivered">Delivered</option>
+      <option value="pending">Pending</option>
+      <option value="for-quotation">For Quotation</option>
+      <option value="for-approval">For Approval</option>
+      <option value="approved">Approved</option>
+      <option value="ordered">Ordered</option>
+      <option value="for-delivery">For Delivery</option>
+      <option value="for-installation">For Installation</option>
+      <option value="delivered">Delivered</option>
       <option value="installed">Installed</option>
+      <option value="on-hold">On Hold</option>
+      <option value="cancelled">Cancelled</option>
+      <option value="replaced">Replaced</option>
     </select>
     <label>Remarks</label><textarea id="m-remarks" placeholder="e.g. ETA May 10, 2026"></textarea>
     <div class="modal-actions">
@@ -362,9 +391,18 @@ html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#F7F4EF;co
     <label>Variant / Spec</label><input type="text" id="em-variant"/>
     <label>Status</label>
     <select id="em-status">
-      <option value="pending">Pending</option><option value="approved">Approved</option>
-      <option value="ordered">Ordered</option><option value="delivered">Delivered</option>
+      <option value="pending">Pending</option>
+      <option value="for-quotation">For Quotation</option>
+      <option value="for-approval">For Approval</option>
+      <option value="approved">Approved</option>
+      <option value="ordered">Ordered</option>
+      <option value="for-delivery">For Delivery</option>
+      <option value="for-installation">For Installation</option>
+      <option value="delivered">Delivered</option>
       <option value="installed">Installed</option>
+      <option value="on-hold">On Hold</option>
+      <option value="cancelled">Cancelled</option>
+      <option value="replaced">Replaced</option>
     </select>
     <label>Remarks</label><textarea id="em-remarks"></textarea>
     <div class="modal-actions">
@@ -407,9 +445,18 @@ html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#F7F4EF;co
     <label>Est. Price (PHP)</label><input type="number" id="bm-price" placeholder="0"/>
     <label>Status</label>
     <select id="bm-status">
-      <option value="pending">Pending</option><option value="approved">Approved</option>
-      <option value="ordered">Ordered</option><option value="delivered">Delivered</option>
+      <option value="pending">Pending</option>
+      <option value="for-quotation">For Quotation</option>
+      <option value="for-approval">For Approval</option>
+      <option value="approved">Approved</option>
+      <option value="ordered">Ordered</option>
+      <option value="for-delivery">For Delivery</option>
+      <option value="for-installation">For Installation</option>
+      <option value="delivered">Delivered</option>
       <option value="installed">Installed</option>
+      <option value="on-hold">On Hold</option>
+      <option value="cancelled">Cancelled</option>
+      <option value="replaced">Replaced</option>
     </select>
     <label>Notes / Spec</label><textarea id="bm-notes" placeholder="e.g. Color: Matte Black, Model: ABC123"></textarea>
     <div class="modal-actions">
@@ -435,9 +482,18 @@ html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#F7F4EF;co
     <label>Est. Price (PHP)</label><input type="number" id="ebm-price"/>
     <label>Status</label>
     <select id="ebm-status">
-      <option value="pending">Pending</option><option value="approved">Approved</option>
-      <option value="ordered">Ordered</option><option value="delivered">Delivered</option>
+      <option value="pending">Pending</option>
+      <option value="for-quotation">For Quotation</option>
+      <option value="for-approval">For Approval</option>
+      <option value="approved">Approved</option>
+      <option value="ordered">Ordered</option>
+      <option value="for-delivery">For Delivery</option>
+      <option value="for-installation">For Installation</option>
+      <option value="delivered">Delivered</option>
       <option value="installed">Installed</option>
+      <option value="on-hold">On Hold</option>
+      <option value="cancelled">Cancelled</option>
+      <option value="replaced">Replaced</option>
     </select>
     <label>Notes / Spec</label><textarea id="ebm-notes"></textarea>
     <div class="modal-actions">
@@ -548,9 +604,35 @@ html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#F7F4EF;co
 
 <script>
 /* ══ CONSTANTS ══ */
-var STATUSES=['pending','approved','ordered','delivered','installed'];
-var SLABELS={pending:'Pending',approved:'Approved',ordered:'Ordered',delivered:'Delivered',installed:'Installed'};
-var SCOLORS={pending:'#8A4A62',approved:'#3A6B38',ordered:'#BA7517',delivered:'#185FA5',installed:'#C4A0AD'};
+var STATUSES=['pending','for-quotation','for-approval','approved','ordered','for-delivery','for-installation','delivered','installed','on-hold','cancelled','replaced'];
+var SLABELS={
+  'pending':'Pending',
+  'for-quotation':'For Quotation',
+  'for-approval':'For Approval',
+  'approved':'Approved',
+  'ordered':'Ordered',
+  'for-delivery':'For Delivery',
+  'for-installation':'For Installation',
+  'delivered':'Delivered',
+  'installed':'Installed',
+  'on-hold':'On Hold',
+  'cancelled':'Cancelled',
+  'replaced':'Replaced'
+};
+var SCOLORS={
+  'pending':'#8A4A62',
+  'for-quotation':'#7A5C8A',
+  'for-approval':'#5B6E8A',
+  'approved':'#3A6B38',
+  'ordered':'#BA7517',
+  'for-delivery':'#7A6218',
+  'for-installation':'#2E6B6B',
+  'delivered':'#185FA5',
+  'installed':'#C4A0AD',
+  'on-hold':'#888078',
+  'cancelled':'#A04040',
+  'replaced':'#6B4A8A'
+};
 
 /* ══ STATE ══ */
 var S={
@@ -558,6 +640,7 @@ var S={
   pendingPinPos:null,pendingFloorId:null,
   editingPinFid:null,editingPinIdx:null,
   editingBuyIdx:null,buyFilter:'All',
+  pendingLibPhotos:[],
   // Global material library — shared across all houses
   materialLib:[],
   houses:{
@@ -619,16 +702,19 @@ function renderLibList(ctx,q){
 
 function applyLibItem(ctx,mat){
   if(ctx==='pin'){
-    document.getElementById('m-item').value=mat.item;
-    document.getElementById('m-supplier').value=mat.supplier;
-    document.getElementById('m-variant').value=mat.variant;
+    document.getElementById('m-item').value=mat.item||'';
+    document.getElementById('m-supplier').value=mat.supplier||'';
+    document.getElementById('m-variant').value=mat.variant!=='TBD'?mat.variant:'';
+    document.getElementById('m-remarks').value=mat.notes&&mat.notes!=='—'?mat.notes:'';
+    // carry photos — store on pending state so savePin picks them up
+    S.pendingLibPhotos=(mat.photos||[]).slice();
   } else {
-    document.getElementById('bm-item').value=mat.item;
-    document.getElementById('bm-supplier').value=mat.supplier;
+    document.getElementById('bm-item').value=mat.item||'';
+    document.getElementById('bm-supplier').value=mat.supplier||'';
     document.getElementById('bm-notes').value=mat.variant!=='TBD'?mat.variant:'';
   }
   document.getElementById('lib-panel-'+ctx).classList.remove('open');
-  showToast('Material filled in — edit as needed');
+  showToast('Filled in — photos carried over ✓');
 }
 
 /* ══ NAVIGATION ══ */
@@ -704,11 +790,16 @@ function ensureFloorView(fid){
         '<div class="pins-layer" id="pl-'+fid+'"></div>'+
       '</div>'+
       '<div class="legend-row">'+
+        '<div class="leg"><div class="leg-d" style="background:#8A4A62"></div>Pending</div>'+
+        '<div class="leg"><div class="leg-d" style="background:#7A5C8A"></div>For Quotation</div>'+
+        '<div class="leg"><div class="leg-d" style="background:#5B6E8A"></div>For Approval</div>'+
         '<div class="leg"><div class="leg-d" style="background:#3A6B38"></div>Approved</div>'+
         '<div class="leg"><div class="leg-d" style="background:#BA7517"></div>Ordered</div>'+
-        '<div class="leg"><div class="leg-d" style="background:#8A4A62"></div>Pending</div>'+
+        '<div class="leg"><div class="leg-d" style="background:#2E6B6B"></div>For Installation</div>'+
         '<div class="leg"><div class="leg-d" style="background:#185FA5"></div>Delivered</div>'+
         '<div class="leg"><div class="leg-d" style="background:#C4A0AD"></div>Installed</div>'+
+        '<div class="leg"><div class="leg-d" style="background:#888078"></div>On Hold</div>'+
+        '<div class="leg"><div class="leg-d" style="background:#A04040"></div>Cancelled</div>'+
       '</div>'+
     '</div>'+
     '<div class="det-card" id="det-'+fid+'"></div>'+
@@ -775,6 +866,7 @@ function openPinModal(){
   ['m-zone','m-item','m-supplier','m-variant','m-remarks'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('m-status').value='pending';
   document.getElementById('lib-panel-pin').classList.remove('open');
+  S.pendingLibPhotos=[];
   document.getElementById('pin-modal').classList.add('open');
   setTimeout(function(){document.getElementById('m-zone').focus();},100);
 }
@@ -791,8 +883,9 @@ function savePin(){
     variant:document.getElementById('m-variant').value.trim()||'TBD',
     status:document.getElementById('m-status').value,
     remarks:document.getElementById('m-remarks').value.trim()||'—',
-    photos:[]
+    photos:S.pendingLibPhotos.slice()
   };
+  S.pendingLibPhotos=[];
   floorByTabId(p.fid).zones.push(zone);
   addToLib(zone);
   closePinModal();renderPins(p.fid);
@@ -942,14 +1035,17 @@ function showZoneDet(z,num,fid){
   html+='<div class="det-row"><div class="det-lbl">Remarks <span style="color:#C4A0AD;font-size:8px;">— tap to edit</span></div>'+
     '<input class="inline-input" value="'+esc(z.remarks)+'" onblur="saveRemarks(\''+fid+'\','+idx+',this.value)" onkeydown="if(event.key===\'Enter\')this.blur()"/></div>';
   // Status — inline badge cycle
+  var curLabel=SLABELS[z.status]||z.status;
+  var curColor=SCOLORS[z.status]||'#7A6A5A';
   html+='<div class="det-row"><div class="det-lbl">Status <span style="color:#C4A0AD;font-size:8px;">— tap to change</span></div>'+
-    '<div style="position:relative;display:inline-block;" id="sbadge-wrap-'+fid+'-'+idx+'">'+
-    '<span class="badge b-'+z.status+'" onclick="toggleStatusPopup(\''+fid+'\','+idx+')">'+SLABELS[z.status]+' <span class="badge-hint">▾</span></span>'+
-    '<div class="status-popup" id="spop-'+fid+'-'+idx+'">'+
+    '<div style="position:relative;display:inline-block;" id="sbadge-wrap-'+fid+'-'+idx+'">'+ 
+    '<span class="badge b-'+(SCOLORS[z.status]?z.status:'custom')+'" onclick="toggleStatusPopup(\''+fid+'\','+idx+')">'+curLabel+' <span class="badge-hint">▾</span></span>'+
+    '<div class="status-popup" id="spop-'+fid+'-'+idx+'" style="max-height:260px;overflow-y:auto;">'+
       STATUSES.map(function(s){
         return '<div class="sopt'+(z.status===s?' cur':'')+'" onclick="setPinStatus(\''+fid+'\','+idx+',\''+s+'\')">'+
           '<div class="sdot" style="background:'+SCOLORS[s]+'"></div>'+SLABELS[s]+'</div>';
       }).join('')+
+      '<div class="sopt" onclick="setCustomStatus(\''+fid+'\','+idx+')" style="border-top:1px solid #F0EBE7;color:#C4A0AD;"><div class="sdot" style="background:#C4A0AD;"></div>+ Custom status…</div>'+
     '</div></div></div>';
   html+='</div>'; // end det-fields
 
@@ -987,7 +1083,22 @@ function setPinStatus(fid,idx,status){
   floorByTabId(fid).zones[idx].status=status;
   document.querySelectorAll('.status-popup.open').forEach(function(p){p.classList.remove('open');});
   renderPins(fid);showZoneDet(floorByTabId(fid).zones[idx],idx+1,fid);
-  showToast('Status → '+SLABELS[status]);
+  showToast('Status → '+(SLABELS[status]||status));
+}
+
+function setCustomStatus(fid,idx){
+  document.querySelectorAll('.status-popup.open').forEach(function(p){p.classList.remove('open');});
+  var val=prompt('Enter custom status:');
+  if(!val||!val.trim())return;
+  val=val.trim();
+  // Add to STATUSES and SLABELS dynamically if new
+  if(!SLABELS[val]){
+    SLABELS[val]=val;
+    SCOLORS[val]='#7A6A5A';
+  }
+  floorByTabId(fid).zones[idx].status=val;
+  renderPins(fid);showZoneDet(floorByTabId(fid).zones[idx],idx+1,fid);
+  showToast('Status → '+val);
 }
 
 function copyPinToBuyList(fid,idx){
