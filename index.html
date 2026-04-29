@@ -312,6 +312,13 @@ html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#F7F4EF;co
       <div class="owner-btn" onclick="openHouse('H8','Whitey')"><div class="owner-num">H8</div><div class="owner-name">Whitey</div></div>
     </div>
     <div class="e-note">Each owner sees only their unit during presentation</div>
+    <div style="display:flex;gap:10px;margin-top:20px;align-items:center;">
+      <div onclick="exportData()" style="font-size:10px;color:#3A6B38;cursor:pointer;border:1px solid #A8CCA8;padding:5px 14px;border-radius:20px;background:#fff;">💾 Export Data</div>
+      <label style="font-size:10px;color:#185FA5;cursor:pointer;border:1px solid #A8B8CA;padding:5px 14px;border-radius:20px;background:#fff;">
+        📂 Import Data
+        <input type="file" accept=".json" style="display:none;" onchange="importData(event)"/>
+      </label>
+    </div>
   </div>
 </div>
 
@@ -323,7 +330,14 @@ html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#F7F4EF;co
         <div class="tr-label">OSM Floor Plan Tracker</div>
         <div class="tr-house" id="tr-house-label"></div>
       </div>
-      <div class="back-btn" onclick="goBack()">&#8592; All Units</div>
+      <div style="display:flex;gap:7px;align-items:center;">
+        <div class="back-btn" onclick="goBack()">&#8592; All Units</div>
+        <div class="back-btn" onclick="exportData()" title="Save all data to a file" style="color:#3A6B38;border-color:#A8CCA8;">💾 Export</div>
+        <label class="back-btn" style="color:#185FA5;border-color:#A8B8CA;cursor:pointer;" title="Load data from a saved file">
+          📂 Import
+          <input type="file" accept=".json" style="display:none;" onchange="importData(event)"/>
+        </label>
+      </div>
     </div>
     <div class="tab-bar" id="tab-bar"></div>
     <div id="floor-views-wrap"></div>
@@ -890,7 +904,7 @@ function savePin(){
   addToLib(zone);
   closePinModal();renderPins(p.fid);
   showZoneDet(zone,floorByTabId(p.fid).zones.length,p.fid);
-  showToast('Pin added — '+zone.name);
+  persist('Pin added — '+zone.name);
 }
 
 /* ══ EDIT PIN MODAL ══ */
@@ -912,12 +926,12 @@ function updatePin(){
   z.variant=document.getElementById('em-variant').value.trim()||'TBD';
   z.status=document.getElementById('em-status').value;
   z.remarks=document.getElementById('em-remarks').value.trim()||'—';
-  addToLib(z);closeEditModal();renderPins(fid);showZoneDet(z,idx+1,fid);showToast('Pin updated');
+  addToLib(z);closeEditModal();renderPins(fid);showZoneDet(z,idx+1,fid);persist('Pin updated');
 }
 
 function deletePin(fid,idx){
   if(!confirm('Remove this pin?'))return;
-  floorByTabId(fid).zones.splice(idx,1);renderPins(fid);renderDetDefault(fid);showToast('Pin removed');
+  floorByTabId(fid).zones.splice(idx,1);renderPins(fid);renderDetDefault(fid);persist('Pin removed');
 }
 
 /* ══ STATUS CYCLE (inline) ══ */
@@ -931,7 +945,7 @@ function cycleBuyStatus(idx){
   var it=H().buyingList[idx];
   var cur=STATUSES.indexOf(it.status);
   it.status=STATUSES[(cur+1)%STATUSES.length];
-  renderBuyingList();showToast('Status → '+SLABELS[it.status]);
+  renderBuyingList();persist('Status → '+(SLABELS[it.status]||it.status));
 }
 
 /* ══ PHOTO UPLOAD ══ */
@@ -942,7 +956,7 @@ function triggerPhotoUpload(fid,idx){
     var rem=6-z.photos.length;
     Array.from(e.target.files).slice(0,rem).forEach(function(file){
       var r=new FileReader();
-      r.onload=function(ev){z.photos.push(ev.target.result);showZoneDet(z,idx+1,fid);};
+      r.onload=function(ev){z.photos.push(ev.target.result);showZoneDet(z,idx+1,fid);saveToStorage();};
       r.readAsDataURL(file);
     });
   };
@@ -966,6 +980,7 @@ function swapHero(thumbEl,fid,zIdx,pIdx){
 function deletePhoto(fid,zIdx,pIdx){
   floorByTabId(fid).zones[zIdx].photos.splice(pIdx,1);
   showZoneDet(floorByTabId(fid).zones[zIdx],zIdx+1,fid);
+  saveToStorage();
 }
 
 /* ══ DETAIL PANEL ══ */
@@ -1069,6 +1084,7 @@ function showZoneDet(z,num,fid){
 
 function saveRemarks(fid,idx,val){
   floorByTabId(fid).zones[idx].remarks=val.trim()||'—';
+  saveToStorage();
 }
 
 function toggleStatusPopup(fid,idx){
@@ -1083,7 +1099,7 @@ function setPinStatus(fid,idx,status){
   floorByTabId(fid).zones[idx].status=status;
   document.querySelectorAll('.status-popup.open').forEach(function(p){p.classList.remove('open');});
   renderPins(fid);showZoneDet(floorByTabId(fid).zones[idx],idx+1,fid);
-  showToast('Status → '+(SLABELS[status]||status));
+  persist('Status → '+(SLABELS[status]||status));
 }
 
 function setCustomStatus(fid,idx){
@@ -1098,7 +1114,7 @@ function setCustomStatus(fid,idx){
   }
   floorByTabId(fid).zones[idx].status=val;
   renderPins(fid);showZoneDet(floorByTabId(fid).zones[idx],idx+1,fid);
-  showToast('Status → '+val);
+  persist('Status → '+val);
 }
 
 function copyPinToBuyList(fid,idx){
@@ -1114,7 +1130,7 @@ function saveFloor(){
   var name=document.getElementById('fm-name').value.trim();if(!name){showToast('Enter a floor name');return;}
   var id='F'+Date.now();
   H().floors.push({id:id,label:name,image:null,zones:[]});
-  closeFloorModal();S.activeTabId=id;rebuildTabBar();showTab(id);showToast(name+' added');
+  closeFloorModal();S.activeTabId=id;rebuildTabBar();showTab(id);persist(name+' added');
 }
 
 /* ══ BUYING LIST ══ */
@@ -1135,7 +1151,7 @@ function saveBuyItem(){
   H().buyingList.push(item);
   // Also add to lib
   addToLib({item:item.item,supplier:item.supplier,variant:item.notes,photos:[]});
-  closeBuyModal();renderBuyingList();showToast('Added: '+item.item);
+  closeBuyModal();renderBuyingList();persist('Added: '+item.item);
 }
 
 function openEditBuyModal(idx){
@@ -1157,9 +1173,9 @@ function updateBuyItem(){
   it.status=document.getElementById('ebm-status').value;
   it.notes=document.getElementById('ebm-notes').value.trim()||'—';
   addToLib({item:it.item,supplier:it.supplier,variant:it.notes,photos:[]});
-  closeEditBuyModal();renderBuyingList();showToast('Updated: '+it.item);
+  closeEditBuyModal();renderBuyingList();persist('Updated: '+it.item);
 }
-function deleteBuyItem(idx){if(!confirm('Remove this item?'))return;H().buyingList.splice(idx,1);renderBuyingList();showToast('Item removed');}
+function deleteBuyItem(idx){if(!confirm('Remove this item?'))return;H().buyingList.splice(idx,1);renderBuyingList();persist('Item removed');}
 
 function renderBuyingList(){
   var list=H().buyingList;
@@ -1318,7 +1334,7 @@ function triggerLibPhoto(idx){
     var rem=6-m.photos.length;
     Array.from(e.target.files).slice(0,rem).forEach(function(file){
       var r=new FileReader();
-      r.onload=function(ev){m.photos.push(ev.target.result);renderLibraryView();};
+      r.onload=function(ev){m.photos.push(ev.target.result);renderLibraryView();saveToStorage();};
       r.readAsDataURL(file);
     });
     document.body.removeChild(inp);
@@ -1386,7 +1402,7 @@ function saveLibItem(){
   S.materialLib.push(mat);
   // Switch sidebar to that category
   S_libCat=mat.cat;
-  closeLibItemModal();renderLibraryView();showToast('Material saved to '+mat.cat);
+  closeLibItemModal();renderLibraryView();persist('Material saved to '+mat.cat);
 }
 
 function openEditLibModal(idx){
@@ -1407,11 +1423,11 @@ function updateLibItem(){
   m.variant=document.getElementById('elm-variant').value.trim()||'TBD';
   m.cat=document.getElementById('elm-cat').value||'Other';
   m.notes=document.getElementById('elm-notes').value.trim()||'—';
-  closeEditLibModal();renderLibraryView();showToast('Material updated');
+  closeEditLibModal();renderLibraryView();persist('Material updated');
 }
 function deleteLibItem(idx){
   if(!confirm('Remove this material from the library?'))return;
-  S.materialLib.splice(idx,1);renderLibraryView();showToast('Material removed');
+  S.materialLib.splice(idx,1);renderLibraryView();persist('Material removed');
 }
 
 // Close new modals on overlay click
@@ -1428,6 +1444,97 @@ function showToast(msg){
 
 /* ══ UTILS ══ */
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+/* ══ EXPORT / IMPORT ══ */
+function exportData(){
+  var data={
+    version:1,
+    exportedAt:new Date().toISOString(),
+    houses:S.houses,
+    materialLib:S.materialLib
+  };
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  var d=new Date();
+  var stamp=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  a.download='LOPA-OSM-Tracker-'+stamp+'.json';
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+  showToast('✓ Data exported — save that file!');
+}
+
+function importData(e){
+  var file=e.target.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var data=JSON.parse(ev.target.result);
+      if(!data.houses){showToast('Invalid file — not a LOPA tracker export');return;}
+      // Restore houses
+      Object.keys(data.houses).forEach(function(code){
+        if(S.houses[code]){
+          S.houses[code].floors=data.houses[code].floors||S.houses[code].floors;
+          S.houses[code].buyingList=data.houses[code].buyingList||[];
+        }
+      });
+      // Restore library
+      if(data.materialLib) S.materialLib=data.materialLib;
+      saveToStorage();
+      // Refresh current view if inside tracker
+      if(S.house){
+        rebuildTabBar();
+        showTab(S.activeTabId||H().floors[0].id);
+      }
+      showToast('✓ All data restored from file!');
+    } catch(err){
+      showToast('Error reading file — make sure it\'s a valid export');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+/* ══ LOCALSTORAGE PERSISTENCE ══ */
+var LS_KEY='lopa_osm_tracker_v1';
+
+function saveToStorage(){
+  try{
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      houses: S.houses,
+      materialLib: S.materialLib
+    }));
+  } catch(e){ console.warn('Save failed (storage full?):', e); }
+}
+
+function loadFromStorage(){
+  try{
+    var raw=localStorage.getItem(LS_KEY);
+    if(!raw)return;
+    var saved=JSON.parse(raw);
+    if(saved.houses){
+      // Merge saved data into S.houses — preserve structure, restore data
+      Object.keys(saved.houses).forEach(function(code){
+        if(S.houses[code]){
+          S.houses[code].floors=saved.houses[code].floors||S.houses[code].floors;
+          S.houses[code].buyingList=saved.houses[code].buyingList||[];
+        }
+      });
+    }
+    if(saved.materialLib) S.materialLib=saved.materialLib;
+    showToast('✓ Your data has been restored');
+  } catch(e){ console.warn('Load failed:', e); }
+}
+
+// Auto-save after every mutation — call persist() at end of each mutating function
+function persist(msg){
+  saveToStorage();
+  if(msg)showToast(msg);
+}
+
+// Load on startup
+loadFromStorage();
 
 // Close modals on overlay click
 ['pin-modal','edit-modal','floor-modal','buy-modal','edit-buy-modal'].forEach(function(id){
