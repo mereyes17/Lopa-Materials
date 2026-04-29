@@ -150,6 +150,60 @@ html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#F7F4EF;co
 
 /* ── BUYING LIST VIEW ── */
 .buying-view{display:none;}.buying-view.active{display:block;}
+
+/* ── LIBRARY VIEW ── */
+.library-view{display:none;}.library-view.active{display:block;}
+.ftab.library{border-color:#5B7FA6;color:#5B7FA6;background:#F5F8FC;}
+.ftab.library.active{background:#5B7FA6;color:#fff;border-color:#5B7FA6;}
+.lib-layout{display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:start;}
+@media(max-width:700px){.lib-layout{grid-template-columns:1fr;}}
+/* sidebar */
+.lib-sidebar{background:#fff;border:1px solid #E5DDD9;border-radius:8px;overflow:hidden;position:sticky;top:20px;}
+.lib-sidebar-title{padding:12px 14px;font-size:9px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#B0A09A;border-bottom:1px solid #F0EBE7;}
+.lib-cat-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:12px;color:#7A6A64;cursor:pointer;border-bottom:1px solid #F5F0EE;transition:background .12s;}
+.lib-cat-item:last-child{border-bottom:none;}
+.lib-cat-item:hover{background:#FAF7F5;}
+.lib-cat-item.active{background:#F0EBE7;color:#3D3028;font-weight:500;}
+.lib-cat-item .cat-icon{margin-right:7px;font-size:13px;}
+.lib-cat-count{font-size:10px;color:#C0B4AF;background:#F5F0EE;padding:1px 7px;border-radius:20px;flex-shrink:0;}
+.lib-cat-item.active .lib-cat-count{background:#E5DDD9;color:#9E8A7E;}
+/* main area */
+.lib-main{}
+.lib-main-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.lib-main-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:#3D3028;}
+.lib-main-sub{font-size:10px;color:#9E8A7E;margin-top:1px;}
+.btn-add-lib{padding:6px 16px;border-radius:20px;font-size:10px;font-weight:500;background:#5B7FA6;color:#fff;border:none;cursor:pointer;transition:background .15s;white-space:nowrap;}
+.btn-add-lib:hover{background:#4A6A8E;}
+.lib-search-bar{width:100%;border:1px solid #E5DDD9;border-radius:6px;padding:9px 14px;font-size:12px;font-family:'DM Sans',sans-serif;color:#3D3028;background:#fff;outline:none;margin-bottom:14px;transition:border-color .15s;}
+.lib-search-bar:focus{border-color:#5B7FA6;}
+.lib-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;}
+.lib-card{background:#fff;border:1px solid #E5DDD9;border-radius:8px;overflow:hidden;transition:box-shadow .15s;}
+.lib-card:hover{box-shadow:0 4px 16px rgba(61,48,40,.08);}
+.lib-card-photo{width:100%;height:130px;object-fit:cover;display:block;cursor:pointer;background:#F0EBE7;}
+.lib-card-photo-empty{width:100%;height:130px;background:#FAF7F5;border-bottom:1px solid #F0EBE7;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:5px;transition:background .15s;}
+.lib-card-photo-empty:hover{background:#FDF8F9;}
+.lib-card-photo-empty span:first-child{font-size:26px;color:#D9CEC9;}
+.lib-card-photo-empty span:last-child{font-size:10px;color:#C0B4AF;}
+.lib-card-body{padding:11px 12px 12px;}
+.lib-card-name{font-size:13px;font-weight:500;color:#3D3028;margin-bottom:2px;}
+.lib-card-supplier{font-size:11px;color:#9E8A7E;}
+.lib-card-variant{font-size:10px;color:#B0A09A;margin-top:2px;font-style:italic;}
+.lib-card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid #F0EBE7;}
+.lib-card-actions{display:flex;gap:5px;}
+.lib-card-btn{padding:3px 10px;font-size:9px;border:1px solid #E5DDD9;border-radius:20px;cursor:pointer;background:#FAF7F5;color:#9E8A7E;transition:all .15s;}
+.lib-card-btn:hover{border-color:#C4A0AD;color:#C4A0AD;}
+.lib-card-btn.del:hover{border-color:#8A4A62;color:#8A4A62;}
+.lib-card-count{font-size:9px;color:#C0B4AF;}
+.lib-empty-state{padding:48px 24px;text-align:center;background:#fff;border:1px solid #E5DDD9;border-radius:8px;}
+.lib-empty-state .lib-empty-icon{font-size:36px;margin-bottom:12px;opacity:.4;}
+.lib-empty-state p{font-size:13px;color:#B0A09A;font-style:italic;line-height:1.7;}
+/* photo preview in modal */
+.modal-photo-preview{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.modal-photo-thumb{width:60px;height:60px;object-fit:cover;border-radius:5px;border:1px solid #E5DDD9;position:relative;display:inline-block;}
+.modal-photo-add{width:60px;height:60px;background:#FAF7F5;border:1.5px dashed #D9CEC9;border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
+.modal-photo-add:hover{border-color:#5B7FA6;background:#F5F8FC;}
+.modal-photo-add span:first-child{font-size:20px;color:#5B7FA6;line-height:1;}
+.modal-photo-add span:last-child{font-size:8px;color:#B0A09A;margin-top:2px;}
 .buying-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
 .buying-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:#3D3028;}
 .btn-add-buy{padding:6px 16px;border-radius:20px;font-size:10px;font-weight:500;background:#BA7517;color:#fff;border:none;cursor:pointer;transition:background .15s;}
@@ -393,6 +447,96 @@ html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:#F7F4EF;co
   </div>
 </div>
 
+<!-- LIBRARY VIEW -->
+<div class="library-view" id="library-view">
+  <div class="lib-layout">
+    <!-- Category Sidebar -->
+    <div class="lib-sidebar" id="lib-sidebar"></div>
+    <!-- Main Content -->
+    <div class="lib-main">
+      <div class="lib-main-header">
+        <div>
+          <div class="lib-main-title" id="lib-main-title">All Materials</div>
+          <div class="lib-main-sub" id="lib-main-sub">Pre-load materials here, then pick when placing floor plan pins</div>
+        </div>
+        <button class="btn-add-lib" onclick="openLibItemModal()">+ Add Material</button>
+      </div>
+      <input class="lib-search-bar" id="lib-search-bar" type="text" placeholder="Search by item, supplier, or spec…" oninput="renderLibraryView()"/>
+      <div class="lib-cards-grid" id="lib-cards-grid"></div>
+      <div id="lib-empty-state" class="lib-empty-state" style="display:none;">
+        <div class="lib-empty-icon">📦</div>
+        <p>No materials in this category yet.<br>Tap <strong style="font-weight:500;">+ Add Material</strong> to get started.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD LIBRARY ITEM MODAL -->
+<div class="modal-overlay" id="lib-item-modal">
+  <div class="modal">
+    <div class="modal-title">Add to Material Library</div>
+    <label>Category</label>
+    <select id="lm-cat">
+      <option value="Flooring">Flooring</option>
+      <option value="Wall Finish">Wall Finish</option>
+      <option value="Ceiling">Ceiling</option>
+      <option value="Kitchen">Kitchen</option>
+      <option value="Bathroom">Bathroom</option>
+      <option value="Plumbing">Plumbing</option>
+      <option value="Electrical">Electrical</option>
+      <option value="Door & Hardware">Door &amp; Hardware</option>
+      <option value="Lighting">Lighting</option>
+      <option value="Appliances">Appliances</option>
+      <option value="Outdoor">Outdoor</option>
+      <option value="Other">Other</option>
+    </select>
+    <label>Item Name</label><input type="text" id="lm-item" placeholder="e.g. Engineered Wood Flooring"/>
+    <label>Supplier</label><input type="text" id="lm-supplier" placeholder="e.g. Wilcon Depot"/>
+    <label>Variant / Spec</label><input type="text" id="lm-variant" placeholder="e.g. Oak Natural 600×600"/>
+    <label>Notes / Remarks</label><textarea id="lm-notes" placeholder="e.g. Available in 3 colors, MOQ 50sqm"></textarea>
+    <label>Photos <span style="color:#B0A09A;font-weight:400;">(optional, up to 6)</span></label>
+    <div class="modal-photo-preview" id="lm-photo-preview">
+      <div class="modal-photo-add" onclick="triggerModalPhoto('lm')">
+        <span>+</span><span>Add photo</span>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeLibItemModal()">Cancel</button>
+      <button class="modal-ok" style="background:#5B7FA6;" onclick="saveLibItem()">Save Material</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT LIBRARY ITEM MODAL -->
+<div class="modal-overlay" id="edit-lib-modal">
+  <div class="modal">
+    <div class="modal-title">Edit Material</div>
+    <label>Category</label>
+    <select id="elm-cat">
+      <option value="Flooring">Flooring</option>
+      <option value="Wall Finish">Wall Finish</option>
+      <option value="Ceiling">Ceiling</option>
+      <option value="Kitchen">Kitchen</option>
+      <option value="Bathroom">Bathroom</option>
+      <option value="Plumbing">Plumbing</option>
+      <option value="Electrical">Electrical</option>
+      <option value="Door & Hardware">Door &amp; Hardware</option>
+      <option value="Lighting">Lighting</option>
+      <option value="Appliances">Appliances</option>
+      <option value="Outdoor">Outdoor</option>
+      <option value="Other">Other</option>
+    </select>
+    <label>Item Name</label><input type="text" id="elm-item"/>
+    <label>Supplier</label><input type="text" id="elm-supplier"/>
+    <label>Variant / Spec</label><input type="text" id="elm-variant"/>
+    <label>Notes / Remarks</label><textarea id="elm-notes"></textarea>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeEditLibModal()">Cancel</button>
+      <button class="modal-ok" style="background:#5B7FA6;" onclick="updateLibItem()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <div class="lb-close">&times;</div>
@@ -462,7 +606,7 @@ function renderLibList(ctx,q){
   var filtered=S.materialLib.filter(function(m){
     return !q||m.item.toLowerCase().includes(q)||m.supplier.toLowerCase().includes(q)||m.variant.toLowerCase().includes(q);
   });
-  if(filtered.length===0){ul.innerHTML='<li class="lib-empty">No materials saved yet.<br>Add a pin first to build your library.</li>';return;}
+  if(filtered.length===0){ul.innerHTML='<li class="lib-empty">No materials yet.<br>Go to the 📦 Library tab to add materials first.</li>';return;}
   ul.innerHTML='';
   filtered.forEach(function(m,i){
     var li=document.createElement('li');
@@ -513,6 +657,7 @@ function rebuildTabBar(){
     bar.appendChild(d);
   });
   var af=document.createElement('div');af.className='add-floor-btn';af.textContent='+ Add Floor';af.onclick=openFloorModal;bar.appendChild(af);
+  var lb=document.createElement('div');lb.className='ftab library'+(S.activeTabId==='library'?' active':'');lb.id='tab-library';lb.textContent='📦 Library';lb.onclick=function(){showTab('library');};bar.appendChild(lb);
   var bl=document.createElement('div');bl.className='ftab buying'+(S.activeTabId==='buying'?' active':'');bl.id='tab-buying';bl.textContent='Buying List';bl.onclick=function(){showTab('buying');};bar.appendChild(bl);
 }
 
@@ -521,10 +666,14 @@ function showTab(id){
   document.querySelectorAll('.ftab').forEach(function(t){t.classList.remove('active');});
   var at=document.getElementById('tab-'+id);if(at)at.classList.add('active');
   document.getElementById('buying-view').classList.remove('active');
+  document.getElementById('library-view').classList.remove('active');
   document.querySelectorAll('.floor-view').forEach(function(v){v.classList.remove('active');});
   if(id==='buying'){
     document.getElementById('buying-view').classList.add('active');
     renderBuyingList();
+  } else if(id==='library'){
+    document.getElementById('library-view').classList.add('active');
+    renderLibraryView();
   } else {
     ensureFloorView(id);
     var fv=document.getElementById('fv-'+id);if(fv)fv.classList.add('active');
@@ -944,6 +1093,221 @@ function renderBuyingList(){
 /* ══ LIGHTBOX ══ */
 function openLightbox(src){document.getElementById('lb-img').src=src;document.getElementById('lightbox').classList.add('open');}
 function closeLightbox(){document.getElementById('lightbox').classList.remove('open');}
+
+/* ══ LIBRARY VIEW ══ */
+var LIB_CATS=[
+  {key:'All',icon:'📦'},
+  {key:'Flooring',icon:'🪵'},
+  {key:'Wall Finish',icon:'🧱'},
+  {key:'Ceiling',icon:'⬜'},
+  {key:'Kitchen',icon:'🍳'},
+  {key:'Bathroom',icon:'🚿'},
+  {key:'Plumbing',icon:'🔧'},
+  {key:'Electrical',icon:'⚡'},
+  {key:'Door & Hardware',icon:'🚪'},
+  {key:'Lighting',icon:'💡'},
+  {key:'Appliances',icon:'🏠'},
+  {key:'Outdoor',icon:'🌿'},
+  {key:'Other',icon:'📋'}
+];
+var S_libCat='All'; // active category
+var S_pendingLibPhotos=[]; // photos being added in modal
+
+function renderLibSidebar(){
+  var sidebar=document.getElementById('lib-sidebar');
+  if(!sidebar)return;
+  var lib=S.materialLib;
+  var html='<div class="lib-sidebar-title">Categories</div>';
+  LIB_CATS.forEach(function(c){
+    var count=c.key==='All'?lib.length:lib.filter(function(m){return m.cat===c.key;}).length;
+    html+='<div class="lib-cat-item'+(S_libCat===c.key?' active':'')+'" onclick="setLibCat(\''+c.key+'\')">'+
+      '<span><span class="cat-icon">'+c.icon+'</span>'+c.key+'</span>'+
+      '<span class="lib-cat-count">'+count+'</span>'+
+    '</div>';
+  });
+  sidebar.innerHTML=html;
+}
+
+function setLibCat(cat){
+  S_libCat=cat;
+  document.getElementById('lib-search-bar').value='';
+  renderLibSidebar();
+  renderLibCards();
+  var title=document.getElementById('lib-main-title');
+  var sub=document.getElementById('lib-main-sub');
+  if(title)title.textContent=cat==='All'?'All Materials':cat;
+  if(sub)sub.textContent=cat==='All'?'All categories — '+S.materialLib.length+' material'+(S.materialLib.length!==1?'s':''):'Showing '+cat+' materials';
+}
+
+function renderLibraryView(){
+  renderLibSidebar();
+  renderLibCards();
+}
+
+function renderLibCards(){
+  var q=(document.getElementById('lib-search-bar').value||'').toLowerCase();
+  var lib=S.materialLib;
+  var filtered=lib.filter(function(m){
+    var catMatch=S_libCat==='All'||(m.cat||'Other')===S_libCat;
+    var qMatch=!q||(m.item||'').toLowerCase().includes(q)||(m.supplier||'').toLowerCase().includes(q)||(m.variant||'').toLowerCase().includes(q);
+    return catMatch&&qMatch;
+  });
+  var grid=document.getElementById('lib-cards-grid');
+  var empty=document.getElementById('lib-empty-state');
+  if(filtered.length===0){grid.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  grid.innerHTML='';
+  filtered.forEach(function(m){
+    var realIdx=lib.indexOf(m);
+    var card=document.createElement('div');card.className='lib-card';
+    // photo area
+    var photoHtml='';
+    if(m.photos&&m.photos.length>0){
+      photoHtml='<div style="position:relative;">'+
+        '<img class="lib-card-photo" src="'+m.photos[0]+'" onclick="openLightbox(\''+m.photos[0]+'\')" alt="material"/>'+
+        '<div style="position:absolute;bottom:5px;right:5px;display:flex;gap:3px;">';
+      for(var pi=1;pi<Math.min(m.photos.length,3);pi++){
+        photoHtml+='<img src="'+m.photos[pi]+'" onclick="openLightbox(\''+m.photos[pi]+'\')" style="width:30px;height:30px;object-fit:cover;border-radius:3px;border:1.5px solid #fff;cursor:pointer;"/>';
+      }
+      photoHtml+='<div onclick="triggerLibPhoto('+realIdx+')" style="width:30px;height:30px;background:rgba(61,48,40,.55);border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:14px;border:1.5px solid rgba(255,255,255,.35);">+</div>';
+      photoHtml+='</div></div>';
+    } else {
+      photoHtml='<div class="lib-card-photo-empty" onclick="triggerLibPhoto('+realIdx+')">'+
+        '<span>📷</span><span>Tap to add photo</span></div>';
+    }
+    var catInfo=LIB_CATS.find(function(c){return c.key===(m.cat||'Other');})||{icon:'📋'};
+    card.innerHTML=photoHtml+
+      '<div class="lib-card-body">'+
+        '<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">'+
+          '<span style="font-size:11px;">'+catInfo.icon+'</span>'+
+          '<span style="font-size:9px;color:#9E8A7E;letter-spacing:.04em;">'+esc(m.cat||'Other')+'</span>'+
+        '</div>'+
+        '<div class="lib-card-name">'+esc(m.item||'Unnamed')+'</div>'+
+        '<div class="lib-card-supplier">'+esc(m.supplier||'—')+'</div>'+
+        (m.variant&&m.variant!=='TBD'?'<div class="lib-card-variant">'+esc(m.variant)+'</div>':'')+
+        (m.notes&&m.notes!=='—'?'<div style="font-size:10px;color:#B0A09A;margin-top:3px;">'+esc(m.notes)+'</div>':'')+
+        '<div class="lib-card-footer">'+
+          '<div class="lib-card-actions">'+
+            '<span class="lib-card-btn" onclick="openEditLibModal('+realIdx+')">Edit</span>'+
+            '<span class="lib-card-btn" onclick="triggerLibPhoto('+realIdx+')">📷</span>'+
+            '<span class="lib-card-btn del" onclick="deleteLibItem('+realIdx+')">Del</span>'+
+          '</div>'+
+          '<div class="lib-card-count">'+(m.photos?m.photos.length:0)+'📷</div>'+
+        '</div>'+
+      '</div>';
+    grid.appendChild(card);
+  });
+}
+
+/* photo upload on lib card */
+function triggerLibPhoto(idx){
+  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=true;inp.style.display='none';document.body.appendChild(inp);
+  inp.onchange=function(e){
+    var m=S.materialLib[idx];if(!m.photos)m.photos=[];
+    var rem=6-m.photos.length;
+    Array.from(e.target.files).slice(0,rem).forEach(function(file){
+      var r=new FileReader();
+      r.onload=function(ev){m.photos.push(ev.target.result);renderLibraryView();};
+      r.readAsDataURL(file);
+    });
+    document.body.removeChild(inp);
+  };
+  inp.click();
+}
+
+/* photo upload inside Add Material modal */
+function triggerModalPhoto(ctx){
+  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.multiple=true;inp.style.display='none';document.body.appendChild(inp);
+  inp.onchange=function(e){
+    var rem=6-S_pendingLibPhotos.length;
+    Array.from(e.target.files).slice(0,rem).forEach(function(file){
+      var r=new FileReader();
+      r.onload=function(ev){S_pendingLibPhotos.push(ev.target.result);renderModalPhotos(ctx);};
+      r.readAsDataURL(file);
+    });
+    document.body.removeChild(inp);
+  };
+  inp.click();
+}
+
+function renderModalPhotos(ctx){
+  var wrap=document.getElementById(ctx+'-photo-preview');if(!wrap)return;
+  wrap.innerHTML='';
+  S_pendingLibPhotos.forEach(function(src,i){
+    var div=document.createElement('div');div.style.cssText='position:relative;display:inline-block;';
+    div.innerHTML='<img src="'+src+'" class="modal-photo-thumb"/>'+
+      '<div onclick="removeModalPhoto('+i+',\''+ctx+'\')" style="position:absolute;top:2px;right:2px;width:16px;height:16px;background:rgba(61,48,40,.75);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:9px;color:#fff;">&times;</div>';
+    wrap.appendChild(div);
+  });
+  if(S_pendingLibPhotos.length<6){
+    var add=document.createElement('div');add.className='modal-photo-add';
+    add.innerHTML='<span>+</span><span>Add</span>';
+    add.onclick=function(){triggerModalPhoto(ctx);};
+    wrap.appendChild(add);
+  }
+}
+
+function removeModalPhoto(i,ctx){
+  S_pendingLibPhotos.splice(i,1);renderModalPhotos(ctx);
+}
+
+function openLibItemModal(){
+  S_pendingLibPhotos=[];
+  ['lm-item','lm-supplier','lm-variant','lm-notes'].forEach(function(id){document.getElementById(id).value='';});
+  // Pre-select current category if not 'All'
+  document.getElementById('lm-cat').value=S_libCat!=='All'?S_libCat:'Flooring';
+  renderModalPhotos('lm');
+  document.getElementById('lib-item-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('lm-item').focus();},100);
+}
+function closeLibItemModal(){document.getElementById('lib-item-modal').classList.remove('open');S_pendingLibPhotos=[];}
+function saveLibItem(){
+  var item=document.getElementById('lm-item').value.trim();
+  if(!item){showToast('Enter an item name');return;}
+  var mat={
+    item:item,
+    supplier:document.getElementById('lm-supplier').value.trim()||'TBD',
+    variant:document.getElementById('lm-variant').value.trim()||'TBD',
+    cat:document.getElementById('lm-cat').value||'Other',
+    notes:document.getElementById('lm-notes').value.trim()||'—',
+    photos:S_pendingLibPhotos.slice()
+  };
+  S.materialLib.push(mat);
+  // Switch sidebar to that category
+  S_libCat=mat.cat;
+  closeLibItemModal();renderLibraryView();showToast('Material saved to '+mat.cat);
+}
+
+function openEditLibModal(idx){
+  var m=S.materialLib[idx];S.editingLibIdx=idx;
+  document.getElementById('elm-item').value=m.item||'';
+  document.getElementById('elm-supplier').value=m.supplier||'';
+  document.getElementById('elm-variant').value=m.variant||'';
+  document.getElementById('elm-cat').value=m.cat||'Other';
+  document.getElementById('elm-notes').value=m.notes||'';
+  document.getElementById('edit-lib-modal').classList.add('open');
+  setTimeout(function(){document.getElementById('elm-item').focus();},100);
+}
+function closeEditLibModal(){document.getElementById('edit-lib-modal').classList.remove('open');}
+function updateLibItem(){
+  var idx=S.editingLibIdx;var m=S.materialLib[idx];
+  m.item=document.getElementById('elm-item').value.trim()||m.item;
+  m.supplier=document.getElementById('elm-supplier').value.trim()||'TBD';
+  m.variant=document.getElementById('elm-variant').value.trim()||'TBD';
+  m.cat=document.getElementById('elm-cat').value||'Other';
+  m.notes=document.getElementById('elm-notes').value.trim()||'—';
+  closeEditLibModal();renderLibraryView();showToast('Material updated');
+}
+function deleteLibItem(idx){
+  if(!confirm('Remove this material from the library?'))return;
+  S.materialLib.splice(idx,1);renderLibraryView();showToast('Material removed');
+}
+
+// Close new modals on overlay click
+['lib-item-modal','edit-lib-modal'].forEach(function(id){
+  var el=document.getElementById(id);
+  el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('open');});
+});
 
 /* ══ TOAST ══ */
 function showToast(msg){
